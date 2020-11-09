@@ -1,0 +1,253 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+
+</head>
+<body>
+
+
+
+<div class="container">
+    <br />
+    <br />
+    <br />
+
+
+    <br />
+
+    <div class="" id="accordion">
+        <div class="faqHeader"><h2>Screens Description</h2></div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Station selection</a>
+                </h4>
+            </div>
+            
+            <div id="collapseOne" class="panel-collapse collapse in">
+                <div class="card-block">
+                    
+                    <ol>
+                        <li>Tocs - Train Company</li>
+                        <li>Arr/Dep - Pick the arrivals, departures or both to see for the service selected</li>
+                        <li>Select Days - Select the day of the week</li>
+                        <li>Time Filter - Select the time of day Am/PM</li>
+                        <li>Timetable - Select the timetable you want to search for</li>
+                        <li>Stop at/passes - Select the station where the service will stop or pass trough</li>
+                        <li>Does not stop at/pass - Select the station where your service will not stop or pass trough</li>
+                        <li>Origin Station - Select the station from where the service starts its journey</li>
+                        <li>Destination Station - Select the station where the service ended its journey</li>
+                        <li>Date Range - Select the date range your search will be based on</li>
+                        <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
+                        <li><i class="fas fa-train"></i> Toggle this to show formations on hover</li>
+                        <li>Train Load - </li>
+                        <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen">Routes</a>
+                </h4>
+            </div>
+            <div id="collapseTen" class="panel-collapse collapse">
+                <div class="card-block">
+                    <ol>
+                        <li>Tocs - Train Company</li>
+                        <li>Select Days - Select the day of the week</li>
+                        <li>Timetable - Select the timetable you want to search for</li>
+                        <li>Stop at/passes - Select the station where the service will stop or pass trough</li>
+                        <li>Does not stop at/pass - Select the station where your service will not stop or pass trough</li>
+                        <li>Origin Station - Select the station from where the service starts its journey</li>
+                        <li>Destination Station - Select the station where the service ended its journey</li>
+                        <li>Date Range - Select the date range your search will be based on</li>
+                        <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
+                        <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">Count Screen</a>
+                </h4>
+            </div>
+            <div id="collapseEleven" class="panel-collapse collapse">
+                <div class="card-block">
+                <ol>
+                    <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                    <li>Date - The date when the count was made</li>
+                    <li>Unit Number - The train Unit Number</li>
+                    <li>L/STP - DEscription ?????????????</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="faqHeader"><h2>FAQ</h2></div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Why the train load is take long to show results?</a>
+                </h4>
+            </div>
+            <div id="collapseTwo" class="panel-collapse collapse">
+                <div class="card-block">
+                    <ul>If you have longer date range selected the train load can take longer to load. For faster results try to use shorter date range.</ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">How can i download data?</a>
+                </h4>
+            </div>
+            <div id="collapseThree" class="panel-collapse collapse">
+                <div class="card-block">
+                    <ul>
+                       By clicking the download icon <i class="fas fa-download"></i> from the left corner of the station screen and count screen you can download data shown on that search
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">Why I do not see any stations on station screen?</a>
+                </h4>
+            </div>
+            <div id="collapseFive" class="panel-collapse collapse">
+                <div class="card-block">
+                    <ul>
+                        Make sure you have selected the correct timetable
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">I have a problem that is not on FAQ list</a>
+                </h4>
+            </div>
+            <div id="collapseSix" class="panel-collapse collapse">
+                <div class="card-block">
+                   
+                    <ul>
+                        You can press on the Service Desk button from the right manu and submit your issue and one of our support team member will get in touch as soon as posible 
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEight">What are the payment options?</a>
+                </h4>
+            </div>
+            <div id="collapseEight" class="panel-collapse collapse">
+                <div class="card-block">
+                    The best way to transfer funds is via Paypal. This secure platform ensures timely payments and a secure environment. 
+                </div>
+            </div>
+        </div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseNine">When do I get paid?</a>
+                </h4>
+            </div>
+            <div id="collapseNine" class="panel-collapse collapse">
+                <div class="card-block">
+                    Our standard payment plan provides for monthly payments. At the end of each month, all accumulated funds are transfered to your account. 
+                    The minimum amount of your balance should be at least 70 USD. 
+                </div>
+            </div>
+        </div>
+
+        <div class="faqHeader">Buyers</div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFour">I want to buy a theme - what are the steps?</a>
+                </h4>
+            </div>
+            <div id="collapseFour" class="panel-collapse collapse">
+                <div class="card-block">
+                    Buying a theme on <strong>PrepBootstrap</strong> is really simple. Each theme has a live preview. 
+                    Once you have selected a theme or template, which is to your liking, you can quickly and securely pay via Paypal.
+                    <br />
+                    Once the transaction is complete, you gain full access to the purchased product. 
+                </div>
+            </div>
+        </div>
+        <div class="card ">
+            <div class="card-header">
+                <h4 class="card-header">
+                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSeven">Is this the latest version of an item</a>
+                </h4>
+            </div>
+            <div id="collapseSeven" class="panel-collapse collapse">
+                <div class="card-block">
+                    Each item in <strong>PrepBootstrap</strong> is maintained to its latest version. This ensures its smooth operation.
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+
+<style>
+    .faqHeader {
+        font-size: 27px;
+        margin: 20px;
+    }
+
+    .panel-heading [data-toggle="collapse"]:after {
+        font-family: 'Glyphicons Halflings';
+        content: "e072"; /* "play" icon */
+        float: right;
+        color: #F58723;
+        font-size: 18px;
+        line-height: 22px;
+        /* rotate "play" icon from > (right arrow) to down arrow */
+        -webkit-transform: rotate(-90deg);
+        -moz-transform: rotate(-90deg);
+        -ms-transform: rotate(-90deg);
+        -o-transform: rotate(-90deg);
+        transform: rotate(-90deg);
+    }
+
+    .panel-heading [data-toggle="collapse"].collapsed:after {
+        /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
+        -webkit-transform: rotate(90deg);
+        -moz-transform: rotate(90deg);
+        -ms-transform: rotate(90deg);
+        -o-transform: rotate(90deg);
+        transform: rotate(90deg);
+        color: #454444;
+    }
+</style>
+
+    
+</body>
+</html>
+

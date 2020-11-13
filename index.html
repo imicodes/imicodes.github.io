@@ -1,190 +1,238 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+        integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
 
 </head>
+
 <body>
 
 
 
-<div class="container">
-    <br />
-    <br />
-    <br />
+    <div class="container">
+        <br />
+        <br />
+        <br />
 
 
-    <br />
+        <br />
 
-    <div class="" id="accordion">
-        <div class="faqHeader"><h2>Screens Description</h2></div>
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">Station selection</a>
-                </h4>
+        <div class="" id="accordion">
+            <div class="faqHeader">
+                <h2>Screens Description</h2>
             </div>
-            
-            <div id="collapseOne" class="panel-collapse collapse in">
-                <div class="card-block">
-                    
-                    <ol>
-                        <li>Tocs - This allows you to select a Train Operating company. For most users there will only be one option in this list, however if you are part of a TOC Group, you will have the option to select multiple TOCS. To clear this filter, press the red 'x'  icon.</li>
-                        <li>Arr/Dep - This allows you to display either Services arriving at the selected station, or Departing from the selected station, or both.</li>
-                        <li>Select Days -Here you can select a day of the week, or multiple days of the week. To clear this filter, press the red 'x'  icon.</li>
-                        <li>Time Filter - Here you can select the AM or PM Peak times.</li>
-                        <li>Timetable - This filter will automatically populate the timetable you select into the date range filter, to allow you to easily switch between timetables. </li>
-                        <li>Stop at/passes - Here you can filter your results to show only Services that pass through select stations or passing points (such as junctions).</li>
-                        <li>Does not stop at/passes - Here you can filter your results to not show Services that pass through select stations or passing points (such as junctions).</li>
-                        <li>Origin Station - Select the station from where the service starts its journey</li>
-                        <li>Destination Station - Select the station where the service ended its journey</li>
-                        <li>Date Range - Select the date range your search will be based on</li>
-                        <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
-                        <li><i class="fas fa-train"></i> Toggle this to show formations on hover</li>
-                        <li>Train Load - </li>
-                        <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
-                    </ol>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseOne">Station</a>
+                    </h4>
+                </div>
+
+                <div id="collapseOne" class="panel-collapse collapse in">
+                    <div class="card-block">
+
+                        <ol>
+                            <h3>Stations tab is to show the train loads based on your selections</h3>
+                            <li>Tocs - This allows you to select a Train Operating company. For most users there will
+                                only be one option in this list, however if you are part of a TOC Group, you will have
+                                the option to select multiple TOCS. To clear this filter, press the red 'x' icon.</li>
+                            <li>Arr/Dep - This allows you to display either Services arriving at the selected station,
+                                or Departing from the selected station, or both.</li>
+                            <li>Select Days -Here you can select a day of the week, or multiple days of the week. To
+                                clear this filter, press the red 'x' icon.</li>
+                            <li>Time Filter - Here you can select the AM or PM Peak times.</li>
+                            <li>Timetable - This filter will automatically populate the timetable you select into the
+                                date range filter, to allow you to easily switch between timetables. </li>
+                            <li>Stop at/passes - Here you can filter your results to show only Services that pass
+                                through select stations or passing points (such as junctions).</li>
+                            <li>Does not stop at/passes - Here you can filter your results to not show Services that
+                                pass through select stations or passing points (such as junctions).</li>
+                            <li>Origin Station - Select the station from where the service starts its journey</li>
+                            <li>Destination Station - Select the station where the service ended its journey</li>
+                            <li>Date Range - Select the date range your search will be based on</li>
+                            <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
+                            <li><i class="fas fa-train"></i> Toggle this to show formations on hover</li>
+                            <li>Train Load - </li>
+                            <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTen">Routes</a>
-                </h4>
-            </div>
-            <div id="collapseTen" class="panel-collapse collapse">
-                <div class="card-block">
-                    <ol>
-                        <li>Tocs - This allows you to select a Train Operating company. For most users there will only be one option in this list, however if you are part of a TOC Group, you will have the option to select multiple TOCS. To clear this filter, press the red 'x'  icon.</li>
-                        <li>Select Days -Here you can select a day of the week, or multiple days of the week. To clear this filter, press the red 'x'  icon.</li>
-                        <li>Timetable - This filter will automatically populate the timetable you select into the date range filter, to allow you to easily switch between timetables. </li>
-                        <li>Stop at/passes - Here you can filter your results to show only Services that pass through select stations or passing points (such as junctions).</li>
-                        <li>Does not stop at/passes - Here you can filter your results to not show Services that pass through select stations or passing points (such as junctions).</li>
-                        <li>Origin Station - Select the station from where the service starts its journey</li>
-                        <li>Destination Station - Select the station where the service ended its journey</li>
-                        <li>Date Range - Select the date range your search will be based on</li>
-                        <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
-                        <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
-                    </ol>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseTen">Routes</a>
+                    </h4>
+                </div>
+                <div id="collapseTen" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ol>
+                            <h3></h3>
+                            <li>Tocs - This allows you to select a Train Operating company. For most users there will
+                                only be one option in this list, however if you are part of a TOC Group, you will have
+                                the option to select multiple TOCS. To clear this filter, press the red 'x' icon.</li>
+                            <li>Select Days -Here you can select a day of the week, or multiple days of the week. To
+                                clear this filter, press the red 'x' icon.</li>
+                            <li>Timetable - This filter will automatically populate the timetable you select into the
+                                date range filter, to allow you to easily switch between timetables. </li>
+                            <li>Stop at/passes - Here you can filter your results to show only Services that pass
+                                through select stations or passing points (such as junctions).</li>
+                            <li>Does not stop at/passes - Here you can filter your results to not show Services that
+                                pass through select stations or passing points (such as junctions).</li>
+                            <li>Origin Station - Select the station from where the service starts its journey</li>
+                            <li>Destination Station - Select the station where the service ended its journey</li>
+                            <li>Date Range - Select the date range your search will be based on</li>
+                            <li>Excluded Dates - Select the dates that you want to exclude from the search</li>
+                            <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEleven">Count Screen</a>
-                </h4>
-            </div>
-            <div id="collapseEleven" class="panel-collapse collapse">
-                <div class="card-block">
-                <ol>
-                    <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
-                    <li>Date - The date when the count was made</li>
-                    <li>Unit Number - The train Unit Number</li>
-                    <li>L/STP - DEscription ?????????????</li>
-                    </ol>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseEleven">Count Screen</a>
+                    </h4>
+                </div>
+                <div id="collapseEleven" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ol>
+                            <h3>On this screen you can see the data output for the slected service</h3>
+                            <li><i class="fas fa-download"></i> Use this to export results in .csv format</li>
+                            <li>Date - The date when the count was made</li>
+                            <li>Unit Number - The train Unit Number</li>
+                            <li>L/STP - STP & LTP, if you click the header you see an LTP or STP Selection</li>
+                            <li>P - Permanent</li>
+                            <li>O - Overlay</li>
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwelve">Query Builder</a>
-                </h4>
-            </div>
-            <div id="collapseTwelve" class="panel-collapse collapse">
-                <div class="card-block">
-                <ol>
-                    <li>Query Name - Name of the query you are creating</li>
-                    <li>Save Query - By clicking this the query you created its saved in the list on the right</li>
-                    <li>New Query - Press this will delete all filters and start a new query</li>
-                    <li>Select field for output - This filter will let you select what outputs do you want to see on the query</li>
-                    <li>Tocs - This allows you to select a Train Operating company. For most users there will only be one option in this list, however if you are part of a TOC Group, you will have the option to select multiple TOCS. To clear this filter, press the red 'x'  icon.</li>
-                    <li>Timetable - This filter will automatically populate the timetable you select into the date range filter, to allow you to easily switch between timetables. </li>
-                    <li>Select Station - Will let you pick what station do you want that query for</li>
-                    <li><i class="fa fa-user"></i> - Howver over to see who created the query</li>
-                    <li><i class="fas fa-search" ></i> - Press this to see the selected query</li>
-                    <li><i class="fas fa-copy"></i> - Press This to clone the selected query</li>
-                    <li><i class="fas fa-share-alt" ></i> - Press this to share the query with other users from your toc</li>
-                    <li><i style="color:red" class="fas fa-times"></i> - Press this to delete the query</li>
-                    <li><a href="https://youtu.be/PPWEFT32oSo">Query Video Demonstration</a></li>
-                    </ol>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseTwelve">Query Builder</a>
+                    </h4>
+                </div>
+                <div id="collapseTwelve" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ol>
+                            <h3>This section is made for the user to be able to make custom queryes</h3>
+                            <li>Query Name - Name of the query you are creating</li>
+                            <li>Save Query - By clicking this the query you created its saved in the list on the right
+                            </li>
+                            <li>New Query - Press this will delete all filters and start a new query</li>
+                            <li>Select field for output - This filter will let you select what outputs do you want to
+                                see on the query</li>
+                            <li>Tocs - This allows you to select a Train Operating company. For most users there will
+                                only be one option in this list, however if you are part of a TOC Group, you will have
+                                the option to select multiple TOCS. To clear this filter, press the red 'x' icon.</li>
+                            <li>Timetable - This filter will automatically populate the timetable you select into the
+                                date range filter, to allow you to easily switch between timetables. </li>
+                            <li>Select Station - Will let you pick what station do you want that query for</li>
+                            <li><i class="fa fa-user"></i> - Howver over to see who created the query</li>
+                            <li><i class="fas fa-search"></i> - Press this to see the selected query</li>
+                            <li><i class="fas fa-copy"></i> - Press This to clone the selected query</li>
+                            <li><i class="fas fa-share-alt"></i> - Press this to share the query with other users from
+                                your toc</li>
+                            <li><i style="color:red" class="fas fa-times"></i> - Press this to delete the query</li>
+                            <li><a href="https://youtu.be/PPWEFT32oSo">Query Video Demonstration</a></li>
+                        </ol>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="faqHeader"><h2>FAQ</h2></div>
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Why the train load is take long to show results?</a>
-                </h4>
+            <div class="faqHeader">
+                <h2>FAQ</h2>
             </div>
-            <div id="collapseTwo" class="panel-collapse collapse">
-                <div class="card-block">
-                    <ul>If you have longer date range selected the train load can take longer to load. For faster results try to use shorter date range.</ul>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseTwo">Why the train load is take long to show results?</a>
+                    </h4>
+                </div>
+                <div id="collapseTwo" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ul>If you have longer date range selected the train load can take longer to load. For faster
+                            results try to use shorter date range.</ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseThree">How can i download data?</a>
-                </h4>
-            </div>
-            <div id="collapseThree" class="panel-collapse collapse">
-                <div class="card-block">
-                    <ul>
-                       By clicking the download icon <i class="fas fa-download"></i> from the left corner of the station screen and count screen you can download data shown on that search
-                    </ul>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseThree">How can i download data?</a>
+                    </h4>
+                </div>
+                <div id="collapseThree" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ul>
+                            By clicking the download icon <i class="fas fa-download"></i> from the left corner of the
+                            station screen and count screen you can download data shown on that search
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseFive">Why I do not see any stations on station screen?</a>
-                </h4>
-            </div>
-            <div id="collapseFive" class="panel-collapse collapse">
-                <div class="card-block">
-                    <ul>
-                        Make sure you have selected the correct timetable
-                    </ul>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseFive">Why I do not see any stations on station screen?</a>
+                    </h4>
+                </div>
+                <div id="collapseFive" class="panel-collapse collapse">
+                    <div class="card-block">
+                        <ul>
+                            Make sure you have selected the correct timetable
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="card ">
-            <div class="card-header">
-                <h4 class="card-header">
-                    <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseSix">I have a problem that is not on FAQ list</a>
-                </h4>
-            </div>
-            <div id="collapseSix" class="panel-collapse collapse">
-                <div class="card-block">
-                   
-                    <ul>
-                        You can press on the Service Desk button from the right manu and submit your issue and one of our support team member will get in touch as soon as posible 
-                    </ul>
+            <div class="card ">
+                <div class="card-header">
+                    <h4 class="card-header">
+                        <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion"
+                            href="#collapseSix">I have a problem that is not on FAQ list</a>
+                    </h4>
+                </div>
+                <div id="collapseSix" class="panel-collapse collapse">
+                    <div class="card-block">
+
+                        <ul>
+                            You can press on the Service Desk button from the right manu and submit your issue and one
+                            of our support team member will get in touch as soon as posible
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- <div class="card ">
+            <!-- <div class="card ">
             <div class="card-header">
                 <h4 class="card-header">
                     <a class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion" href="#collapseEight">What are the payment options?</a>
@@ -209,7 +257,6 @@ integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00
                 </div>
             </div>
         </div>
-
         <div class="faqHeader">Buyers</div>
         <div class="card ">
             <div class="card-header">
@@ -241,39 +288,40 @@ integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00
     </div>
 </div> -->
 
-<style>
-    .faqHeader {
-        font-size: 27px;
-        margin: 20px;
-    }
+            <style>
+                .faqHeader {
+                    font-size: 27px;
+                    margin: 20px;
+                }
 
-    .panel-heading [data-toggle="collapse"]:after {
-        font-family: 'Glyphicons Halflings';
-        content: "e072"; /* "play" icon */
-        float: right;
-        color: #F58723;
-        font-size: 18px;
-        line-height: 22px;
-        /* rotate "play" icon from > (right arrow) to down arrow */
-        -webkit-transform: rotate(-90deg);
-        -moz-transform: rotate(-90deg);
-        -ms-transform: rotate(-90deg);
-        -o-transform: rotate(-90deg);
-        transform: rotate(-90deg);
-    }
+                .panel-heading [data-toggle="collapse"]:after {
+                    font-family: 'Glyphicons Halflings';
+                    content: "e072";
+                    /* "play" icon */
+                    float: right;
+                    color: #F58723;
+                    font-size: 18px;
+                    line-height: 22px;
+                    /* rotate "play" icon from > (right arrow) to down arrow */
+                    -webkit-transform: rotate(-90deg);
+                    -moz-transform: rotate(-90deg);
+                    -ms-transform: rotate(-90deg);
+                    -o-transform: rotate(-90deg);
+                    transform: rotate(-90deg);
+                }
 
-    .panel-heading [data-toggle="collapse"].collapsed:after {
-        /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
-        -webkit-transform: rotate(90deg);
-        -moz-transform: rotate(90deg);
-        -ms-transform: rotate(90deg);
-        -o-transform: rotate(90deg);
-        transform: rotate(90deg);
-        color: #454444;
-    }
-</style>
+                .panel-heading [data-toggle="collapse"].collapsed:after {
+                    /* rotate "play" icon from > (right arrow) to ^ (up arrow) */
+                    -webkit-transform: rotate(90deg);
+                    -moz-transform: rotate(90deg);
+                    -ms-transform: rotate(90deg);
+                    -o-transform: rotate(90deg);
+                    transform: rotate(90deg);
+                    color: #454444;
+                }
+            </style>
 
-    
+
 </body>
-</html>
 
+</html>

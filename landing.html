@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <!-- Bootsrap css -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+
+
+
+</head>
+
+<body onload="checkEdits()">
+
+  <style>
+    .landing_page_cards {
+      border-radius: 1.5em;
+      box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+    }
+
+    body {
+      background-color: #e8ecef;
+    }
+
+    .content_landing_page {
+      margin: 5rem;
+      margin-top: 2rem;
+
+    }
+  </style>
+
+  <div class="content_landing_page">
+    <div class="row justify-content-center cards-margin">
+
+      <div class="col-8">
+        <div class="">
+          <div class="card-body">
+
+
+            <p>
+              <rssapp-ticker id="tCxv9Puo0PLvNlep"></rssapp-ticker>
+              <script src="https://widget.rss.app/v1/ticker.js" type="text/javascript" async></script>
+            </p>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="row justify-content-center cards-margin">
+
+      <div class="col-4">
+        <div class="landing_page_cards">
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col-12"><a href="" onclick="saveEdits()"><span class="float-right">Edit</span></a></div>
+              <div class="col-12">Lates News</div>
+            </div>
+            <hr>
+
+
+            <div id="edit" contenteditable="true">
+              Add the lates news here
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="row justify-content-center cards-margin">
+
+      <div class="col-4">
+        <div class="landing_page_cards">
+          <div class="card-body">
+
+
+            <p>
+              <rssapp-carousel id="4ZUHEjXYAHwavEEY"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
+            </p>
+
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-4">
+        <div class="landing_page_cards">
+          <div class="card-body">
+
+
+            <p>
+              <rssapp-carousel id="wIlvSuHvqgq0OWZO"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+  <!-- Boostrap Scripts -->
+
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+  <script>
+
+    function saveEdits() {
+
+      //get the editable element
+      var editElem = document.getElementById("edit");
+
+      //get the edited element content
+      var userVersion = editElem.innerHTML;
+
+      //save the content to local storage
+      localStorage.userEdits = userVersion;
+
+      //write a confirmation to the user
+      document.getElementById("update").innerHTML = "Edits saved!";
+
+    }
+
+
+    function checkEdits() {
+
+      //find out if the user has previously saved edits
+      if (localStorage.userEdits != null)
+        document.getElementById("edit").innerHTML = localStorage.userEdits;
+    }
+
+
+  </script>
+
+</body>
+
+</html>

@@ -40,9 +40,9 @@
     .grid-container {
       display: grid;
       grid-template-areas:
-        'header header header header header header'
-        'menu main main main right right'
-        'menu footer footer footer footer footer';
+        'header header header header header '
+        'menu menu menu main main '
+        'menu menu menu footer right ';
       grid-gap: 10px;
 
       padding: 10px;
@@ -83,8 +83,8 @@
         <hr>
       </div>
       <div class="new_features_card">
-        <div class="landing_page_cards">
-          <div class="h-100 card-body">
+        <div class="landing_page_cards" style="height: 100%;">
+          <div class="h-100 card-body" >
 
 
             <h4>New Features</h4>
@@ -92,6 +92,8 @@
               <li>Addons for</li>
               <li>Query builder</li>
               <li>Routes</li>
+              <li>Routes</li>
+
             </ul>
 
           </div>
@@ -116,30 +118,27 @@
         </div>
 
       </div>
-      <div class="news_card">
-        <div class="landing_page_cards">
+      <div class="news_card" >
+        <div class="landing_page_cards" >
           <div class="h-100 card-body">
 
-            <div class="row">
-              <div class="col-12"><a href="" onclick="saveEdits()"><span class="float-right">Edit</span></a>
-              </div>
-              <div class="col-12">Latest News</div>
-            </div>
-            <hr>
-            <div id="edit" contenteditable="true">
-              Add the latest news here
-            </div>
+            <div><rssapp-carousel id="wnI9h64VICs1Z0jl"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script></div>
 
           </div>
         </div>
 
       </div>
 
-      <div class="rss_card">
-        <div style="width: 30%;">
-          <rssapp-carousel id="4ZUHEjXYAHwavEEY"></rssapp-carousel>
-          <script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
-        </div>
+      <div class="rss_card" >
+        <div class="landing_page_cards" >
+          <div class="h-100 card-body">
+
+
+            <rssapp-carousel id="4ZUHEjXYAHwavEEY"></rssapp-carousel>
+            <script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
+          </div>
+
+        
 
       </div>
     </div>

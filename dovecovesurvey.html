@@ -46,16 +46,12 @@
           <div class="card-body">
 
             <div class="row">
-              <div class="col-12"><a href="" onclick="saveEdits()"><span class="float-right">Edit</span></a></div>
               <div class="col-12"><iframe src="https://www.fastfieldwebforms.com/us/webforms/15f852ec-143c-4d9d-b1d2-d9f1df4bfba8" height="1000" width="500" allow="camera;microphone;geolocation"></iframe>
               </div>
             </div>
             <hr>
 
 
-            <div id="edit" contenteditable="true">
-              Add the lates news here
-            </div>
 
           </div>
         </div>
@@ -63,35 +59,7 @@
     </div>
 
     <hr>
-    <div class="row justify-content-center cards-margin">
 
-      <div class="col-4">
-        <div class="landing_page_cards">
-          <div class="card-body">
-
-
-            <p>
-              <rssapp-carousel id="4ZUHEjXYAHwavEEY"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
-            </p>
-
-          </div>
-        </div>
-      </div>
-
-
-      <div class="col-4">
-        <div class="landing_page_cards">
-          <div class="card-body">
-
-
-            <p>
-              <rssapp-carousel id="wIlvSuHvqgq0OWZO"></rssapp-carousel><script src="https://widget.rss.app/v1/carousel.js" type="text/javascript" async></script>
-            </p>
-          </div>
-        </div>
-
-      </div>
-    </div>
 
   </div>
 
@@ -110,34 +78,7 @@
     crossorigin="anonymous"></script>
 
 
-  <script>
 
-    function saveEdits() {
-
-      //get the editable element
-      var editElem = document.getElementById("edit");
-
-      //get the edited element content
-      var userVersion = editElem.innerHTML;
-
-      //save the content to local storage
-      localStorage.userEdits = userVersion;
-
-      //write a confirmation to the user
-      document.getElementById("update").innerHTML = "Edits saved!";
-
-    }
-
-
-    function checkEdits() {
-
-      //find out if the user has previously saved edits
-      if (localStorage.userEdits != null)
-        document.getElementById("edit").innerHTML = localStorage.userEdits;
-    }
-
-
-  </script>
 
 </body>
 

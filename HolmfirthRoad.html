@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>Survey Template | PrepBootstrap</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css" />
+
+    <script type="text/javascript" src="js/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+
+
+    <!-- Your platform (jquery) scripts. -->
+
+    <link href="https://unpkg.com/survey-jquery@1.8.29/survey.css" type="text/css" rel="stylesheet" />
+    <script src="https://unpkg.com/survey-jquery@1.8.29/survey.jquery.min.js"></script>
+</head>
+
+<body>
+
+    <style>
+        .landing_page_cards {
+            border-radius: 1.5em;
+            box-shadow: 0px 11px 35px 2px rgba(0, 0, 0, 0.14);
+        }
+
+        body {
+            background-color: #e8ecef;
+        }
+
+        .content_landing_page {
+            margin: 5rem;
+            margin-top: 2rem;
+
+        }
+
+        .logo{
+            margin-left: 30%;
+            margin-right: 30%;
+           
+        }
+        img{
+                height: 100px;
+                width: 200px;
+            }
+        @media only screen and (min-width: 1024px) {
+        .cont{
+            margin-left: 30%;
+            margin-right: 30%;
+        }
+}
+
+
+    </style>
+
+    <div class="content_landing_page">
+        <div class="row justify-content-center cards-margin">
+
+
+
+            <div class="row justify-content-center cards-margin">
+                <div class="cont">
+                    <div style="margin-left: 30%; margin-right: 30%;">
+                    <img src="images/UUlogo.jpg" alt="">
+                </div>
+                    <p style="text-align: center;">This is being conducted because Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut felis tortor, cursus pretium metus eu, efficitur vehicula felis. Donec eu commodo est, sit amet dapibus massa.</p>
+                    <hr>
+                    <p style="text-align: center;">It looks like you have joined our survey at Holmfirth Road / A635. Due to the increased popularity at our sites and to improve parking conditions, please complete the following survey to assist in our improvement of the area and to have the chance of winning a £50 Amazon voucher.</p>
+                    <p style="text-align: center;">Survey Facilitated by</p>
+                    <div class="logo"><img src="images/PassengerAnalyticsMono.png"  alt=""></div>
+                    <div id="surveyContainer"></div>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            Survey.StylesManager.applyTheme("bootstrap");
+
+            var surveyJSON = { "pages": [{ "name": "page1", "elements": [{ "type": "radiogroup", "name": "If you drove here today, have you parked at the same place you began this survey?", "title": "If you drove here today, have you parked at the same place you began this survey?", "isRequired": true, "choices": [{ "value": "Yes", "text": "Yes" }, { "value": "No/did not used a car", "text": "No/did not used a car" }], "colCount": 2 }, { "type": "radiogroup", "name": "Where did you park today?", "visible": false, "visibleIf": "{If you drove here today, have you parked at the same place you began this survey?} = 'No/did not used a car'", "title": "Where did you park today?", "choices": [{ "value": "The Reservoir Car Park", "text": "The Reservoir Car Park" }, { "value": "on the roadside", "text": "on the roadside" }, { "value": "walked", "text": "walked" }, { "value": "cycled", "text": "cycled" }, { "value": "public transport or taxi", "text": "public transport or taxi" }] }, { "type": "radiogroup", "name": "What time did you arrive?", "title": "What time did you arrive?", "isRequired": true, "choices": [{ "value": "before 6am", "text": "before 6am" }, { "value": "6am to 9am", "text": "6am to 9am" }, { "value": "9am to 12pm", "text": "9am to 12pm" }, { "value": "12pm to 3pm", "text": "12pm to 3pm" }, { "value": "3pm to 6pm", "text": "3pm to 6pm" }, { "value": "after 6pm", "text": "after 6pm" }] }, { "type": "radiogroup", "name": "Once you arrived here, how long did it take you to find somewhere to park?", "title": "Once you arrived here, how long did it take you to find somewhere to park?", "isRequired": true, "choices": [{ "value": "less than a minute", "text": "less than a minute" }, { "value": "less than 5 minutes", "text": "less than 5 minutes" }, { "value": "5 to 10 minutes", "text": "5 to 10 minutes" }, { "value": "longer than 10 minutes", "text": "longer than 10 minutes" }] }, { "type": "radiogroup", "name": "How many people are in your party?", "title": "How many people are in your party? ", "isRequired": true, "choices": [{ "value": "Just me ", "text": "Just me " }, { "value": "2", "text": "2" }, { "value": "3 or over ", "text": "3 or over " }] }, { "type": "radiogroup", "name": "How often do you visit this site?", "title": "How often do you visit this site? ", "isRequired": true, "choices": [{ "value": "maybe once a month ", "text": "maybe once a month " }, { "value": "once a week ", "text": "once a week " }, { "value": "more than once a week ", "text": "more than once a week " }, { "value": "this is my first time ", "text": "this is my first time " }] }, { "type": "text", "name": "To help us understand how far our visitors travel, please can you enter the first 4 characters of your postcode.", "title": "To help us understand how far our visitors travel, please can you enter the first 4 characters of your postcode.  ", "isRequired": true }, { "type": "radiogroup", "name": "Did you used to visit this site prior to March 2020 (pre-covid)?", "title": "Did you used to visit this site prior to March 2020 (pre-covid)? ", "isRequired": true, "choices": [{ "value": "Yes", "text": "Yes" }, { "value": "No", "text": "No" }] }, { "type": "radiogroup", "name": "Do you visit more or less frequently now:", "visibleIf": "{Did you used to visit this site prior to March 2020 (pre-covid)?} = 'Yes'", "title": "Do you visit more or less frequently now: ", "choices": [{ "value": "more frequently", "text": "more frequently" }, { "value": "less frequently", "text": "less frequently" }] }, { "type": "rating", "name": "How do you rate the parking at our site out of 5 (5 being the best):", "title": "How do you rate the parking at our site out of 5 (5 being the best): ", "isRequired": true }, { "type": "radiogroup", "name": "Would you be happy to pay for parking / pay more for parking / pay for better parking?", "title": "Would you be happy to pay for parking / pay more for \tparking / pay for better parking?", "isRequired": true, "choices": [{ "value": "Yes", "text": "Yes" }, { "value": "No", "text": "No" }] }, { "type": "rating", "name": "Aside from the parking, how do you rate your overall experience at the site from 1 to 5", "title": "Aside from the parking, how do you rate your overall experience at the site from 1 to 5", "isRequired": true }, { "type": "comment", "name": "If you wish, please take a moment to let us know what improvements do you think we can make, or leave any other feedback you desire.", "title": "If you wish, please take a moment to let us know what improvements do you think we can make, or leave any other feedback you desire. " }, { "type": "text", "name": "To be eligible to win a £50 amazon voucher and be informed of any future updates, please enter you email address below", "title": "To be eligible to win a £50 amazon voucher and be informed of any future updates, please enter you email address below", "inputType": "email" }] }] }
+
+            function sendDataToServer(survey) {
+                //send Ajax request to your web server.
+                alert("The results are:" + JSON.stringify(survey.data));
+            }
+
+            var survey = new Survey.Model(surveyJSON);
+            survey.surveyPostId = "8569ec34-cf11-40e0-8796-8cfbaffa4e4b";
+            $("#surveyContainer").Survey({
+                model: survey,
+                onComplete: sendDataToServer
+            });
+        </script>
+</body>
+
+</html>

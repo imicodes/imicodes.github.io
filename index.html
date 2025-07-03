@@ -647,6 +647,84 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+    let touchDraggingItem = null;
+    let currentTouchTarget = null;
+
+    document.querySelectorAll('.item').forEach(item => {
+      item.addEventListener('touchstart', e => {
+        touchDraggingItem = item.cloneNode(true);
+        touchDraggingItem.classList.add('dragging');
+        touchDraggingItem.style.position = 'absolute';
+        touchDraggingItem.style.zIndex = 9999;
+        touchDraggingItem.style.pointerEvents = 'none';
+        touchDraggingItem.style.opacity = '0.9';
+        touchDraggingItem.style.transform = 'scale(1.1)';
+        document.body.appendChild(touchDraggingItem);
+        moveTouch(e);
+      });
+
+      item.addEventListener('touchmove', moveTouch);
+
+      item.addEventListener('touchend', e => {
+        if (touchDraggingItem && currentTouchTarget) {
+          const slot = currentTouchTarget;
+          const slotType = slot.dataset.type;
+          if (
+            (draggedFrom === 'Snacks' && slotType.toLowerCase().includes('snack')) ||
+            (draggedFrom !== 'Snacks' && slotType.toLowerCase() === draggedFrom.toLowerCase())
+          ) {
+            if (slot.querySelector('.item')) {
+              if (!confirm('This slot already has a meal. Do you want to replace it?')) {
+                cleanupTouchDrag();
+                return;
+              }
+            }
+            const type = slot.dataset.type;
+            const timeMatch = slot.textContent.match(/\((.*?)\)/);
+            const time = timeMatch ? timeMatch[1] : '';
+            slot.innerHTML = `${type} (${time})`;
+            const newItem = createRemovableClone(item);
+            slot.appendChild(newItem);
+            slot.classList.add('dropped');
+            setTimeout(() => slot.classList.remove('dropped'), 500);
+          }
+        }
+        cleanupTouchDrag();
+      });
+    });
+
+    function moveTouch(e) {
+      if (!touchDraggingItem) return;
+      const touch = e.touches[0];
+      touchDraggingItem.style.left = touch.pageX + 'px';
+      touchDraggingItem.style.top = touch.pageY + 'px';
+
+      const el = document.elementFromPoint(touch.clientX, touch.clientY);
+      const potentialDropZone = el?.closest('.meal-type');
+
+      document.querySelectorAll('.meal-type').forEach(zone =>
+        zone.classList.remove('drag-over')
+      );
+
+      if (potentialDropZone) {
+        potentialDropZone.classList.add('drag-over');
+        currentTouchTarget = potentialDropZone;
+      } else {
+        currentTouchTarget = null;
+      }
+    }
+
+    function cleanupTouchDrag() {
+      if (touchDraggingItem) {
+        document.body.removeChild(touchDraggingItem);
+        touchDraggingItem = null;
+      }
+      currentTouchTarget = null;
+      document.querySelectorAll('.meal-type').forEach(zone =>
+        zone.classList.remove('drag-over')
+      );
+    }
 </script>
 </body>
 </html>

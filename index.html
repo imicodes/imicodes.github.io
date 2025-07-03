@@ -560,6 +560,7 @@ document.querySelectorAll('.meal-type').forEach(slot => {
       slot.appendChild(newItem);
       slot.classList.add('dropped');
       setTimeout(() => slot.classList.remove('dropped'), 500);
+      savePlanToLocalStorage();
     }
   });
 });
@@ -648,6 +649,63 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+    function savePlanToLocalStorage() {
+      const plan = {};
+      document.querySelectorAll('.day-column').forEach(day => {
+        const dayId = day.id;
+        plan[dayId] = {};
+        day.querySelectorAll('.meal-type').forEach(slot => {
+          const type = slot.dataset.type;
+          const mealItem = slot.querySelector('.item');
+          if (mealItem) {
+            plan[dayId][type] = mealItem.textContent.replace('×', '').trim();
+          }
+        });
+      });
+      localStorage.setItem('mealPlan', JSON.stringify(plan));
+    }
+
+    function loadPlanFromLocalStorage() {
+      const saved = localStorage.getItem('mealPlan');
+      if (!saved) return;
+      const plan = JSON.parse(saved);
+      Object.entries(plan).forEach(([dayId, meals]) => {
+        Object.entries(meals).forEach(([type, content]) => {
+          const day = document.getElementById(dayId);
+          if (day) {
+            const slot = Array.from(day.querySelectorAll('.meal-type'))
+              .find(s => s.dataset.type === type);
+            if (slot) {
+              const timeMatch = slot.textContent.match(/\((.*?)\)/);
+              const time = timeMatch ? timeMatch[1] : '';
+              slot.innerHTML = `${type} (${time})`;
+              const newItem = createRemovableCloneFromText(content);
+              slot.appendChild(newItem);
+            }
+          }
+        });
+      });
+    }
+
+    function createRemovableCloneFromText(text) {
+      const item = document.createElement('div');
+      item.classList.add('item');
+      item.textContent = text;
+
+      const removeBtn = document.createElement('button');
+      removeBtn.innerText = '×';
+      removeBtn.classList.add('remove-btn');
+      removeBtn.onclick = () => {
+        if (confirm('Remove this meal?')) {
+          item.remove();
+          savePlanToLocalStorage();
+        }
+      };
+      item.appendChild(removeBtn);
+      return item;
+    }
+
+    // --- Mobile Touch Drag-and-Drop Support ---
     let touchDraggingItem = null;
     let currentTouchTarget = null;
 
@@ -688,6 +746,7 @@ document.addEventListener('DOMContentLoaded', () => {
             slot.appendChild(newItem);
             slot.classList.add('dropped');
             setTimeout(() => slot.classList.remove('dropped'), 500);
+            savePlanToLocalStorage();
           }
         }
         cleanupTouchDrag();
@@ -725,6 +784,16 @@ document.addEventListener('DOMContentLoaded', () => {
         zone.classList.remove('drag-over')
       );
     }
+
+    // Load saved plan on page load
+    window.onload = () => {
+      if (typeof showColumn === 'function') showColumn('breakfast');
+      if (typeof toggleDays === 'function') toggleDays();
+      const today = new Date().getDay();
+      const dayCols = document.querySelectorAll('.day-column');
+      if (dayCols[today]) dayCols[today].classList.add('today');
+      loadPlanFromLocalStorage();
+    };
 </script>
 </body>
 </html>

@@ -406,6 +406,74 @@ body:not(.light-theme) .day-column.focused {
   background: #f87171;
   color: #fff;
 }
+
+
+@media (max-width: 600px) {
+  .topbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .topbar button {
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 14px;
+  }
+
+  #theme-switch {
+    top: 12px;
+    right: 12px;
+    transform: scale(0.9);
+  }
+
+  .main-content {
+    flex-direction: column;
+    padding: 0 10px;
+    gap: 16px;
+  }
+
+  .meal-cards {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 10px;
+    scroll-snap-type: x mandatory;
+  }
+
+  .column {
+    min-width: 200px;
+    flex-shrink: 0;
+    scroll-snap-align: start;
+  }
+
+  .item {
+    font-size: 15px;
+    padding: 12px 14px;
+  }
+
+  .remove-btn {
+    top: 6px;
+    right: 8px;
+    width: 22px;
+    height: 22px;
+    font-size: 14px;
+  }
+
+  .day-column {
+    padding: 12px 8px;
+  }
+
+  .meal-type {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+
+  .day-column h3 {
+    font-size: 1em;
+  }
+}
+
 </style>
 
 <body>

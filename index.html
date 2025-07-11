@@ -143,6 +143,46 @@ body {
   background: #059669;
   color: #fff;
 }
+
+/* Add meal input and button */
+.add-meal-input,
+.add-meal-btn {
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 8px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.add-meal-input {
+  border: 1px solid #334155;
+  background: #0f172a;
+  color: #a7f3d0;
+}
+
+.add-meal-btn {
+  border: none;
+  background: #34d399;
+  color: #1e293b;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.add-meal-btn:hover {
+  background: #059669;
+  color: #fff;
+}
+
+body.light-theme .add-meal-input {
+  background: #f0fdfa;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+body.light-theme .add-meal-btn {
+  background: #22c55e;
+  color: #fff;
+}
 #day-columns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -434,6 +474,8 @@ body:not(.light-theme) .day-column.focused {
         <div class="item" draggable="true">Greek yogurt, oats, raspberries</div>
         <div class="item" draggable="true">Smoothie: spinach, banana, almond milk</div>
         <div class="item" draggable="true">Toast, avocado, poached egg</div>
+        <input id="breakfast-input" class="add-meal-input" placeholder="Add new item">
+        <button class="add-meal-btn" onclick="addMeal('breakfast')">Add</button>
       </div>
       <div class="column" id="lunch">
         <h3>Lunch</h3>
@@ -444,6 +486,8 @@ body:not(.light-theme) .day-column.focused {
         <div class="item" draggable="true">Turkey & cheese sandwich, tomato salad</div>
         <div class="item" draggable="true">Chickpea & quinoa salad, roasted veg</div>
         <div class="item" draggable="true">Sweet potato, tuna, green salad</div>
+        <input id="lunch-input" class="add-meal-input" placeholder="Add new item">
+        <button class="add-meal-btn" onclick="addMeal('lunch')">Add</button>
       </div>
       <div class="column" id="dinner">
         <h3>Dinner</h3>
@@ -454,6 +498,8 @@ body:not(.light-theme) .day-column.focused {
         <div class="item" draggable="true">Beef stir-fry, noodles/rice</div>
         <div class="item" draggable="true">Grilled chicken, courgettes, couscous</div>
         <div class="item" draggable="true">Roast chicken, carrots & peas, potatoes</div>
+        <input id="dinner-input" class="add-meal-input" placeholder="Add new item">
+        <button class="add-meal-btn" onclick="addMeal('dinner')">Add</button>
       </div>
       <div class="column" id="snacks">
         <h3>Snacks</h3>
@@ -465,6 +511,8 @@ body:not(.light-theme) .day-column.focused {
         <div class="item" draggable="true">Oatcakes with hummus</div>
         <div class="item" draggable="true">Celery with peanut butter</div>
         <div class="item" draggable="true">Greek yogurt or cottage cheese</div>
+        <input id="snacks-input" class="add-meal-input" placeholder="Add new item">
+        <button class="add-meal-btn" onclick="addMeal('snacks')">Add</button>
       </div>
     </div>
     <div id="day-columns"></div>
@@ -527,9 +575,69 @@ function createRemovableClone(item) {
   return clone;
 }
 
-document.querySelectorAll('.item').forEach(item => {
+function setupNewItem(item) {
   item.addEventListener('dragstart', () => item.classList.add('dragging'));
   item.addEventListener('dragend', () => item.classList.remove('dragging'));
+
+  item.addEventListener('touchstart', e => {
+    touchDraggingItem = item.cloneNode(true);
+    touchDraggingItem.classList.add('dragging');
+    touchDraggingItem.style.position = 'absolute';
+    touchDraggingItem.style.zIndex = 9999;
+    touchDraggingItem.style.pointerEvents = 'none';
+    touchDraggingItem.style.opacity = '0.9';
+    touchDraggingItem.style.transform = 'scale(1.1)';
+    document.body.appendChild(touchDraggingItem);
+    moveTouch(e);
+  });
+
+  item.addEventListener('touchmove', moveTouch);
+
+  item.addEventListener('touchend', e => {
+    if (touchDraggingItem && currentTouchTarget) {
+      const slot = currentTouchTarget;
+      const slotType = slot.dataset.type;
+      if (
+        (draggedFrom === 'Snacks' && slotType.toLowerCase().includes('snack')) ||
+        (draggedFrom !== 'Snacks' && slotType.toLowerCase() === draggedFrom.toLowerCase())
+      ) {
+        if (slot.querySelector('.item')) {
+          if (!confirm('This slot already has a meal. Do you want to replace it?')) {
+            cleanupTouchDrag();
+            return;
+          }
+        }
+        const type = slot.dataset.type;
+        const timeMatch = slot.textContent.match(/\((.*?)\)/);
+        const time = timeMatch ? timeMatch[1] : '';
+        slot.innerHTML = `${type} (${time})`;
+        const newItem = createRemovableClone(item);
+        slot.appendChild(newItem);
+        slot.classList.add('dropped');
+        setTimeout(() => slot.classList.remove('dropped'), 500);
+        savePlanToLocalStorage();
+      }
+    }
+    cleanupTouchDrag();
+  });
+}
+
+function addMeal(type) {
+  const input = document.getElementById(`${type}-input`);
+  const value = input.value.trim();
+  if (!value) return;
+  const column = document.getElementById(type);
+  const item = document.createElement('div');
+  item.className = 'item';
+  item.textContent = value;
+  item.setAttribute('draggable', 'true');
+  column.appendChild(item);
+  setupNewItem(item);
+  input.value = '';
+}
+
+document.querySelectorAll('.item').forEach(item => {
+  setupNewItem(item);
 });
 
 document.querySelectorAll('.meal-type').forEach(slot => {
@@ -714,47 +822,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentTouchTarget = null;
 
     document.querySelectorAll('.item').forEach(item => {
-      item.addEventListener('touchstart', e => {
-        touchDraggingItem = item.cloneNode(true);
-        touchDraggingItem.classList.add('dragging');
-        touchDraggingItem.style.position = 'absolute';
-        touchDraggingItem.style.zIndex = 9999;
-        touchDraggingItem.style.pointerEvents = 'none';
-        touchDraggingItem.style.opacity = '0.9';
-        touchDraggingItem.style.transform = 'scale(1.1)';
-        document.body.appendChild(touchDraggingItem);
-        moveTouch(e);
-      });
-
-      item.addEventListener('touchmove', moveTouch);
-
-      item.addEventListener('touchend', e => {
-        if (touchDraggingItem && currentTouchTarget) {
-          const slot = currentTouchTarget;
-          const slotType = slot.dataset.type;
-          if (
-            (draggedFrom === 'Snacks' && slotType.toLowerCase().includes('snack')) ||
-            (draggedFrom !== 'Snacks' && slotType.toLowerCase() === draggedFrom.toLowerCase())
-          ) {
-            if (slot.querySelector('.item')) {
-              if (!confirm('This slot already has a meal. Do you want to replace it?')) {
-                cleanupTouchDrag();
-                return;
-              }
-            }
-            const type = slot.dataset.type;
-            const timeMatch = slot.textContent.match(/\((.*?)\)/);
-            const time = timeMatch ? timeMatch[1] : '';
-            slot.innerHTML = `${type} (${time})`;
-            const newItem = createRemovableClone(item);
-            slot.appendChild(newItem);
-            slot.classList.add('dropped');
-            setTimeout(() => slot.classList.remove('dropped'), 500);
-            savePlanToLocalStorage();
-          }
-        }
-        cleanupTouchDrag();
-      });
+      setupNewItem(item);
     });
 
     function moveTouch(e) {

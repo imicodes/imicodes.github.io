@@ -517,7 +517,10 @@ function createRemovableClone(item) {
   removeBtn.innerText = '×';
   removeBtn.classList.add('remove-btn');
   removeBtn.onclick = () => {
-    if (confirm('Remove this meal?')) clone.remove();
+    if (confirm('Remove this meal?')) {
+      clone.remove();
+      savePlanToLocalStorage();
+    }
   };
   clone.appendChild(removeBtn);
   clone.classList.remove('dragging');
@@ -574,6 +577,7 @@ function resetPlan() {
   });
   // Remove focus when toggling or resetting
   document.querySelectorAll('.day-column').forEach(c => c.classList.remove('focused'));
+  localStorage.removeItem('mealPlan');
 }
 
 function toggleDays() {

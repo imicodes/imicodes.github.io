@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cape Verde Holiday Checklist</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+      --border: #e5e7eb;
+      --danger: #b91c1c;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #0f766e, #0891b2);
+      color: white;
+      padding: 28px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 30px rgba(15, 118, 110, 0.18);
+    }
+
+    header h1 {
+      margin: 0 0 8px;
+      font-size: 2rem;
+    }
+
+    header p {
+      margin: 0;
+      opacity: 0.92;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 16px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+
+    .progress-wrap {
+      flex: 1;
+      min-width: 240px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .progress-bar {
+      height: 12px;
+      background: #e5e7eb;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--accent);
+      transition: width 0.2s ease;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.04);
+    }
+
+    .section h2 {
+      margin: 0 0 14px;
+      font-size: 1.25rem;
+      color: var(--accent);
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 4px;
+      border-bottom: 1px solid #f0f2f5;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    input[type="checkbox"] {
+      width: 21px;
+      height: 21px;
+      accent-color: var(--accent);
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    label {
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    input[type="checkbox"]:checked + label {
+      text-decoration: line-through;
+      color: var(--muted);
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 18px;
+      text-align: center;
+    }
+
+    @media print {
+      body { background: white; }
+      .toolbar, .note { display: none; }
+      .container { max-width: none; padding: 0; }
+      header { box-shadow: none; }
+      .section { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Boa Vista Holiday Checklist</h1>
+      <p>RIU Karamboa · 7 nights · Departure: 1 August</p>
+    </header>
+
+    <div class="toolbar">
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span>Checklist progress</span>
+          <strong id="progressText">0 of 0 completed</strong>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" onclick="checkAll()">Tick all</button>
+        <button class="secondary" onclick="window.print()">Print</button>
+        <button class="danger" onclick="resetChecklist()">Reset</button>
+      </div>
+    </div>
+
+    <div id="checklist"></div>
+
+    <div class="note">
+      Your ticks are saved automatically in this browser.
+    </div>
+  </div>
+
+  <script>
+    const sections = {
+      "Travel Documents": [
+        "Passport",
+        "Boarding passes",
+        "TUI booking confirmation",
+        "Hotel confirmation",
+        "Travel insurance details",
+        "Driving licence, if needed",
+        "Emergency contact numbers",
+        "Photos or copies of passports on phone"
+      ],
+      "Money": [
+        "Bank card",
+        "Credit card",
+        "Cash in euros",
+        "Small euro notes or coins for tips"
+      ],
+      "Electronics": [
+        "Phone",
+        "Phone charger",
+        "USB charging cable",
+        "Power bank",
+        "Smartwatch charger",
+        "Earbuds or headphones",
+        "Camera, optional",
+        "UK to EU plug adaptor"
+      ],
+      "Clothes": [
+        "7–8 T-shirts",
+        "4–5 pairs of shorts",
+        "2 pairs of swim shorts",
+        "Flip-flops",
+        "Trainers",
+        "Sunglasses",
+        "Hat or cap",
+        "Smart outfit for dinner",
+        "Light jumper",
+        "Underwear",
+        "Socks",
+        "Pyjamas"
+      ],
+      "Beach": [
+        "Beach bag",
+        "Reusable water bottle",
+        "Waterproof phone pouch",
+        "Dry bag, optional",
+        "Snorkel mask, optional"
+      ],
+      "Toiletries": [
+        "Toothbrush",
+        "Toothpaste",
+        "Deodorant",
+        "Razor",
+        "Hairbrush",
+        "Moisturiser",
+        "Lip balm"
+      ],
+      "Sun Protection": [
+        "SPF 50 sunscreen",
+        "Face sunscreen",
+        "After-sun lotion",
+        "Aloe vera gel"
+      ],
+      "Medicines": [
+        "Regular medication",
+        "Painkillers",
+        "Anti-diarrhoea tablets",
+        "Antihistamines",
+        "Plasters",
+        "Motion sickness tablets",
+        "Rehydration sachets"
+      ],
+      "Other Useful Items": [
+        "Mosquito repellent",
+        "Book or Kindle",
+        "Downloaded films or music",
+        "Small backpack for excursions"
+      ],
+      "Before Leaving Home": [
+        "Complete online check-in",
+        "Charge all devices",
+        "Clear space on phone",
+        "Lock windows and doors",
+        "Confirm airport parking or taxi",
+        "Pack passports in hand luggage"
+      ],
+      "Honeymoon Extras": [
+        "Mention honeymoon at check-in",
+        "Book speciality restaurants",
+        "Pack a nice outfit for a romantic dinner"
+      ]
+    };
+
+    const container = document.getElementById("checklist");
+
+    function itemId(section, item) {
+      return (section + "-" + item)
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+    }
+
+    function renderChecklist() {
+      Object.entries(sections).forEach(([section, items]) => {
+        const sectionEl = document.createElement("section");
+        sectionEl.className = "section";
+
+        const heading = document.createElement("h2");
+        heading.textContent = section;
+        sectionEl.appendChild(heading);
+
+        items.forEach(item => {
+          const id = itemId(section, item);
+          const row = document.createElement("div");
+          row.className = "item";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = id;
+          checkbox.checked = localStorage.getItem(id) === "true";
+          checkbox.addEventListener("change", () => {
+            localStorage.setItem(id, checkbox.checked);
+            updateProgress();
+          });
+
+          const label = document.createElement("label");
+          label.htmlFor = id;
+          label.textContent = item;
+
+          row.appendChild(checkbox);
+          row.appendChild(label);
+          sectionEl.appendChild(row);
+        });
+
+        container.appendChild(sectionEl);
+      });
+
+      updateProgress();
+    }
+
+    function updateProgress() {
+      const boxes = [...document.querySelectorAll('input[type="checkbox"]')];
+      const checked = boxes.filter(box => box.checked).length;
+      const total = boxes.length;
+      const percent = total ? Math.round((checked / total) * 100) : 0;
+
+      document.getElementById("progressText").textContent =
+        `${checked} of ${total} completed`;
+      document.getElementById("progressFill").style.width = `${percent}%`;
+    }
+
+    function checkAll() {
+      document.querySelectorAll('input[type="checkbox"]').forEach(box => {
+        box.checked = true;
+        localStorage.setItem(box.id, "true");
+      });
+      updateProgress();
+    }
+
+    function resetChecklist() {
+      const confirmed = confirm("Reset all ticks?");
+      if (!confirmed) return;
+
+      document.querySelectorAll('input[type="checkbox"]').forEach(box => {
+        box.checked = false;
+        localStorage.removeItem(box.id);
+      });
+      updateProgress();
+    }
+
+    renderChecklist();
+  </script>
+</body>
+</html>

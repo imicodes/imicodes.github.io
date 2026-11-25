@@ -11,6 +11,8 @@ function metrics(){const p=state.profile||{},initial=Number(p.initial)||0,target
    These are editable estimates, not verified product-label values. */
 const foods=[
 [/^eggs?$|^boiled eggs$/,143,13,1,10,50],
+[/tofu/,145,15,3,8,0],
+[/chickpeas|kidney beans/,135,8,20,3,0],
 [/wholemeal (bread|toast)/,245,10,41,4,40],
 [/oats/,370,13,60,7,0],
 [/milk/,47,3.5,4.8,1.7,0],
@@ -53,7 +55,7 @@ function estimateMeal(meal){
 function nutrition(){
  const key=w+'-'+d;
  const records=state.nutrition?.[key]||{};
- const planned=menu((w-1)%4,d).map(estimateMeal);
+ const planned=(typeof selectedMenu==='function'?selectedMenu((w-1)%4,d):menu((w-1)%4,d)).map((m,i)=>typeof customEstimate==='function'?customEstimate(m,i):estimateMeal(m));
  const totals=[0,0,0,0], eaten=[0,0,0,0];
  const root=$('nutrition');root.replaceChildren();
  const labels=['Breakfast','Lunch','Snack','Dinner','Extra food / drinks / oil'];

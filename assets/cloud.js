@@ -1,17 +1,20 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-import {getFirestore,doc,getDoc,runTransaction,serverTimestamp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+import {getFirestore,doc,getDoc,runTransaction,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 const app=initializeApp({apiKey:"AIzaSyB_BeoObTIzp8jmPWZ0fIunGvDwu46Vjvc",authDomain:"imicodes-health-dashboard.firebaseapp.com",projectId:"imicodes-health-dashboard",storageBucket:"imicodes-health-dashboard.firebasestorage.app",messagingSenderId:"302089969749",appId:"1:302089969749:web:8f48d5135a075e6fd734dc"});
 const auth=getAuth(app),db=getFirestore(app);
 const el=id=>document.getElementById(id),status=s=>el('cloud-status').textContent=s;
-let revision=null,activeUid=null,busy=false;
+let revision=null,activeUid=null,busy=false,baseline=null,timer=null,unsubscribe=null,enabled=false;
 const ref=uid=>doc(db,'users',uid,'backups','dashboard');
 function controls(){const signed=!!auth.currentUser;el('cloud-login').hidden=signed;el('cloud-login').disabled=busy;el('cloud-logout').hidden=!signed;el('cloud-logout').disabled=busy;el('cloud-save').disabled=!signed||busy;el('cloud-load').disabled=!signed||busy}
 async function action(fn){if(busy)return;busy=true;controls();try{await fn()}catch(e){status('Cloud operation failed: '+(e.code||e.message))}finally{busy=false;controls()}}
 await setPersistence(auth,browserSessionPersistence);
-onAuthStateChanged(auth,user=>{revision=null;activeUid=user?.uid||null;controls();status(user?'Signed in. Load an existing cloud backup or save this device’s progress.':'Signed out. Local records remain on this device.')});
+onAuthStateChanged(auth,user=>{
+ stopAuto();revision=null;baseline=null;activeUid=user?.uid||null;controls();
+ status(user?'Signed in. Load or save a backup, then enable automatic sync.':'Signed out. Local records remain on this device.');
+});
 el('cloud-login').onclick=()=>action(()=>signInWithPopup(auth,new GoogleAuthProvider()));
-el('cloud-logout').onclick=()=>action(()=>signOut(auth));
+el('cloud-logout').onclick=()=>action(async()=>{if(enabled&&JSON.stringify(state)!==baseline&&!confirm('Unsynced changes remain on this device. Sign out anyway?'))return;stopAuto();await signOut(auth)});
 el('cloud-load').onclick=()=>action(async()=>{
  const uid=auth.currentUser.uid,snap=await getDoc(ref(uid));
  if(activeUid!==uid)return;
@@ -19,7 +22,7 @@ el('cloud-load').onclick=()=>action(async()=>{
  const data=snap.data(),v=JSON.parse(data.payload);
  if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
  if(!confirm('Replace this device’s progress with your cloud backup? Export a local backup first if needed.'))return;
- localStorage.setItem('weight16-v1',JSON.stringify(v));state=v;revision=data.revision;table();today();status('Cloud backup loaded.');
+ localStorage.setItem('weight16-v1',JSON.stringify(v));state=v;revision=data.revision;baseline=JSON.stringify(state);table();today();status('Cloud backup loaded.');
 });
 el('cloud-save').onclick=()=>action(async()=>{
  const uid=auth.currentUser.uid;
@@ -31,5 +34,38 @@ el('cloud-save').onclick=()=>action(async()=>{
   if(current!==(revision??0))throw Error('Cloud backup changed or already exists. Export local progress and load the cloud backup before saving again.');
   tx.set(target,{payload,revision:current+1,updatedAt:serverTimestamp()});return current+1;
  });
- if(activeUid===uid){revision=next;status('Cloud backup saved successfully.')}
+ if(activeUid===uid){revision=next;baseline=payload;status('Cloud backup saved successfully.')}
 });
+
+function stopAuto(){enabled=false;clearInterval(timer);timer=null;if(unsubscribe)unsubscribe();unsubscribe=null;el('cloud-auto').checked=false}
+function conflict(){stopAuto();status('Sync paused: cloud and local changes conflict. Export local backup, then load cloud progress before enabling sync again.')}
+async function autoSave(){
+ if(!enabled||busy||!activeUid||baseline===null||JSON.stringify(state)===baseline)return;
+ const uid=activeUid,payload=JSON.stringify(state),expected=revision;
+ busy=true;controls();
+ try{
+  if(new TextEncoder().encode(payload).length>900000)throw Error('Backup too large');
+  const next=await runTransaction(db,async tx=>{
+   const target=ref(uid),snap=await tx.get(target),current=snap.exists()?snap.data().revision:0;
+   if(current!==expected)throw Error('revision-conflict');
+   tx.set(target,{payload,revision:current+1,updatedAt:serverTimestamp()});return current+1;
+  });
+  if(activeUid===uid){revision=next;baseline=payload;status('Automatically saved at '+new Date().toLocaleTimeString())}
+ }catch(e){if(e.message==='revision-conflict')conflict();else status('Sync waiting: '+(e.code||e.message)+'; local changes retained.')}
+ finally{busy=false;controls()}
+}
+el('cloud-auto').onchange=()=>{
+ if(!el('cloud-auto').checked){stopAuto();status('Automatic sync off.');return}
+ if(!activeUid||busy||baseline===null){stopAuto();status('First load or save your cloud backup, then enable automatic sync.');return}
+ enabled=true;const uid=activeUid;
+ unsubscribe=onSnapshot(ref(uid),{includeMetadataChanges:true},snap=>{
+  if(!enabled||activeUid!==uid||busy||snap.metadata.hasPendingWrites||snap.metadata.fromCache)return;
+  if(!snap.exists()){conflict();return}
+  const data=snap.data();if(data.revision===revision)return;
+  if(JSON.stringify(state)!==baseline){conflict();return}
+  try{const v=JSON.parse(data.payload);if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
+   localStorage.setItem('weight16-v1',JSON.stringify(v));state=v;revision=data.revision;baseline=JSON.stringify(v);table();render();status('Updated from cloud.');
+  }catch(e){stopAuto();status('Sync paused: '+e.message)}
+ },e=>{stopAuto();status('Sync paused: '+e.code)});
+ timer=setInterval(autoSave,3000);status('Automatic sync enabled for this session.');
+};

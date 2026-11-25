@@ -1,6 +1,6 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
-import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
-import {getFirestore,doc,getDoc,runTransaction,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
+import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
+import {getFirestore,doc,getDoc,getDocFromServer,runTransaction,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 const app=initializeApp({apiKey:"AIzaSyB_BeoObTIzp8jmPWZ0fIunGvDwu46Vjvc",authDomain:"imicodes-health-dashboard.firebaseapp.com",projectId:"imicodes-health-dashboard",storageBucket:"imicodes-health-dashboard.firebasestorage.app",messagingSenderId:"302089969749",appId:"1:302089969749:web:8f48d5135a075e6fd734dc"});
 const auth=getAuth(app),db=getFirestore(app);
 const el=id=>document.getElementById(id),status=s=>el('cloud-status').textContent=s;
@@ -8,10 +8,33 @@ let revision=null,activeUid=null,busy=false,baseline=null,timer=null,unsubscribe
 const ref=uid=>doc(db,'users',uid,'backups','dashboard');
 function controls(){const signed=!!auth.currentUser;el('cloud-login').hidden=signed;el('cloud-login').disabled=busy;el('cloud-logout').hidden=!signed;el('cloud-logout').disabled=busy;el('cloud-save').disabled=!signed||busy;el('cloud-load').disabled=!signed||busy}
 async function action(fn){if(busy)return;busy=true;controls();try{await fn()}catch(e){status('Cloud operation failed: '+(e.code||e.message))}finally{busy=false;controls()}}
-await setPersistence(auth,browserSessionPersistence);
-onAuthStateChanged(auth,user=>{
- stopAuto();revision=null;baseline=null;activeUid=user?.uid||null;controls();
- status(user?'Signed in. Load or save a backup, then enable automatic sync.':'Signed out. Local records remain on this device.');
+await setPersistence(auth,browserLocalPersistence);
+const gate=el('login-gate'),dashboard=el('private-dashboard'),gateStatus=el('login-status');
+let generation=0;
+function lock(message){dashboard.hidden=true;gate.hidden=false;gateStatus.textContent=message;el('gate-login').disabled=false}
+el('gate-login').onclick=async()=>{el('gate-login').disabled=true;try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){lock('Sign-in failed: '+(e.code||e.message))}};
+el('gate-export').onclick=()=>el('export').click();
+onAuthStateChanged(auth,async user=>{
+ const token=++generation;stopAuto();revision=null;baseline=null;activeUid=null;controls();
+ dashboard.hidden=true;gate.hidden=false;el('gate-export').hidden=true;
+ if(!user){lock(gateStatus.textContent==='Access denied. Use the authorised Google account.'?gateStatus.textContent:'Sign in with your authorised Google account.');return}
+ gateStatus.textContent='Verifying private database access…';el('gate-login').disabled=true;
+ try{
+  const snap=await getDocFromServer(ref(user.uid));if(token!==generation)return;
+  const local=JSON.stringify(state);
+  if(snap.exists()){
+   const data=snap.data(),v=JSON.parse(data.payload);
+   if(!v||!/^\\d{4}-\\d{2}-\\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
+   if(local!==JSON.stringify(v)){
+    const backup=localStorage.getItem('weight16-v1');
+    if(backup&&backup!==JSON.stringify(v))localStorage.setItem('weight16-pre-login-backup',backup);
+   }
+   state=v;revision=data.revision;baseline=JSON.stringify(v);save();table();today();
+  }else{revision=0;baseline=JSON.stringify(state)}
+  activeUid=user.uid;dashboard.hidden=false;gate.hidden=true;controls();
+  if(!snap.exists()){status('Authorised. Save your first cloud backup to start automatic sync.');return}
+  el('cloud-auto').checked=true;el('cloud-auto').onchange();
+ }catch(e){if(token!==generation)return;const denied=e.code==='permission-denied';lock(denied?'Access denied. Use the authorised Google account.':'Unable to verify access. Check your connection and sign in again.');await signOut(auth).catch(()=>{})}
 });
 el('cloud-login').onclick=()=>action(()=>signInWithPopup(auth,new GoogleAuthProvider()));
 el('cloud-logout').onclick=()=>action(async()=>{if(enabled&&JSON.stringify(state)!==baseline&&!confirm('Unsynced changes remain on this device. Sign out anyway?'))return;stopAuto();await signOut(auth)});
@@ -34,7 +57,7 @@ el('cloud-save').onclick=()=>action(async()=>{
   if(current!==(revision??0))throw Error('Cloud backup changed or already exists. Export local progress and load the cloud backup before saving again.');
   tx.set(target,{payload,revision:current+1,updatedAt:serverTimestamp()});return current+1;
  });
- if(activeUid===uid){revision=next;baseline=payload;status('Cloud backup saved successfully.')}
+ if(activeUid===uid){revision=next;baseline=payload;status('Cloud backup saved successfully.');if(!enabled){el('cloud-auto').checked=true;queueMicrotask(()=>{if(!busy)el('cloud-auto').onchange();else setTimeout(()=>el('cloud-auto').onchange(),0)})}}
 });
 
 function stopAuto(){enabled=false;clearInterval(timer);timer=null;if(unsubscribe)unsubscribe();unsubscribe=null;el('cloud-auto').checked=false}

@@ -1,9 +1,27 @@
 
 /* Additional planner tools; all personal records remain in localStorage. */
-const baseMenu=menu;
+const originalMenu=menu;
+const planNames={original:'Original balanced rotation',budget:'Budget-friendly',vegetarian:'Vegetarian',mediterranean:'Mediterranean-inspired'};
+const planMenus={
+ budget:[
+ ['60 g oats, 200 ml milk, 1 banana','150 g chicken breast, 250 g potatoes, 150 g carrots','200 g Greek yoghurt, 1 apple','150 g lean beef mince, 180 g pasta, 150 g tomato sauce'],
+ ['2 eggs, 80 g wholemeal bread, 1 apple','120 g tuna, 180 g rice, 150 g peas','200 g cottage cheese, 1 pear','180 g chicken breast, 250 g potatoes, 200 g vegetables'],
+ ['60 g oats, 200 ml milk, 100 g berries','2 eggs, 2 wholemeal wraps, 150 g salad','200 g Greek yoghurt, 1 banana','180 g turkey mince, 180 g rice, 200 g vegetables']],
+ vegetarian:[
+ ['60 g oats, 200 ml milk, 150 g Greek yoghurt, 100 g berries','150 g tofu, 180 g rice, 200 g broccoli, 10 g olive oil','200 g cottage cheese, 1 apple','200 g chickpeas, 250 g potatoes, 150 g vegetables, 10 g olive oil'],
+ ['3 eggs, 80 g wholemeal bread, 100 g tomatoes','200 g kidney beans, 2 wholemeal wraps, 150 g salad','200 g Greek yoghurt, 20 g almonds','180 g tofu, 180 g pasta, 150 g tomato sauce'],
+ ['250 g Greek yoghurt, 60 g oats, 1 banana','200 g chickpeas, 180 g rice, 150 g vegetables','2 eggs, 1 orange','200 g tofu, 250 g potatoes, 200 g broccoli, 10 g olive oil']],
+ mediterranean:[
+ ['250 g Greek yoghurt, 50 g oats, 100 g berries, 20 g almonds','150 g chicken breast, 180 g rice, 200 g salad, 10 g olive oil','1 apple, 200 g cottage cheese','180 g salmon, 250 g potatoes, 200 g broccoli, 10 g olive oil'],
+ ['2 eggs, 80 g wholemeal bread, 100 g tomatoes','150 g tuna, 200 g chickpeas, 150 g salad, 10 g olive oil','200 g Greek yoghurt, 1 pear','180 g chicken breast, 180 g pasta, 150 g tomato sauce'],
+ ['60 g oats, 200 ml milk, 1 banana','180 g chicken breast, 2 wholemeal wraps, 150 g salad','200 g Greek yoghurt, 20 g almonds','180 g cod, 250 g potatoes, 200 g vegetables, 10 g olive oil']]
+};
+function planFor(week,day){return state.planDays?.[week+'-'+day]||'original'}
+function baseMenu(r,i,week=w){const p=planMenus[planFor(week,i)];return p?p[(r*7+i)%p.length].slice():originalMenu(r,i)}
+
 const dayKey=()=>w+'-'+d;
 function selectedMenu(r,i,week=w){
- return baseMenu(r,i).map((m,j)=>state.swaps?.[week+'-'+i]?.[j]||m);
+ return baseMenu(r,i,week).map((m,j)=>state.swaps?.[week+'-'+i]?.[j]||m);
 }
 // Existing menu is a const. Keep the original renderer intact and use the
 // selected meals in the preparation panel and editable nutrition overrides.
@@ -39,7 +57,7 @@ function prep(){
 }
 let shoppingFilter='all';
 function quantities(){
- const map=new Map(),legacy=[...new Set(Array.from({length:7},(_,i)=>baseMenu((w-1)%4,i)).flat(2).flatMap(s=>s.split(', ')).map(s=>s.replace(/^\d+\s*(g|ml)?\s*/,'').replace(/^small /,'').trim()))].sort();
+ const map=new Map(),legacy=[...new Set(Array.from({length:7},(_,i)=>originalMenu((w-1)%4,i)).flat(2).flatMap(s=>s.split(', ')).map(s=>s.replace(/^\d+\s*(g|ml)?\s*/,'').replace(/^small /,'').trim()))].sort();
  const category=n=>/chicken|turkey|beef|pork|salmon|cod|haddock|tuna|bacon|prawn/.test(n)?'Meat & fish':/yoghurt|yogurt|milk|cheese|egg|cottage/.test(n)?'Dairy & eggs':/apple|banana|berries|berry|broccoli|tomato|salad|vegetable|potato|carrot|spinach|pepper|bean|orange|pear|cucumber|avocado|mushroom|courgette|fruit/.test(n)?'Fruit & vegetables':/bread|toast|wrap|rice|pasta|oat|cereal/.test(n)?'Bakery & grains':'Cupboard & other';
  for(let i=0;i<7;i++)for(const meal of selectedMenu((w-1)%4,i))for(const part of meal.split(', ')){
  const m=part.trim().match(/^(\d+(?:\.\d+)?)\s*(g|ml|slices?)?\s+(.+)$/i);
@@ -81,7 +99,7 @@ function activity(){
  if(avg!==null){const b=document.createElement('button');b.textContent='Use average in weekly tracker';b.onclick=()=>{state.weights[w]=avg.toFixed(1);save();table();metrics()};root.append(b)}
 }
 $('reset-nutrition').onclick=()=>{if(!confirm('Reset nutrition values and extra food for this day?'))return;const key=dayKey();state.nutrition??={};delete state.nutrition[key];selectedMenu((w-1)%4,d).forEach((m,i)=>{if(m!==baseMenu((w-1)%4,d)[i]){state.nutrition[key]??={};state.nutrition[key][i]=customEstimate(m,i)}});save();render()};
-const previousRender=render;render=function(){previousRender();prep();quantities();activity()};today();
+const previousRender=render;render=function(){previousRender();prep();quantities();activity();planSettings();exerciseSchedule()};today();
 
 function customEstimate(meal,slot){return (state.customMeals||[]).find(x=>x.slot===slot&&x.ingredients===meal)?.macros?.slice()||estimateMeal(meal)}
 function customMealEditor(root){
@@ -96,4 +114,22 @@ function customMealEditor(root){
  const submit=document.createElement('button');submit.type='submit';submit.textContent='Save custom meal';form.append(submit);
  form.onsubmit=e=>{e.preventDefault();const n=name.value.trim(),m=ingredients.value.trim(),i=Number(slot.value);if(!n||!m)return;state.customMeals??=[];if(state.customMeals.some(x=>x.slot===i&&x.ingredients===m)){alert('This meal already exists for this meal type.');return}const estimated=estimateMeal(m);state.customMeals.push({id:crypto.randomUUID(),name:n,slot:i,ingredients:m,macros:macros.map((x,j)=>x.value===''?estimated[j]:Number(x.value))});save();render()};
  for(const meal of state.customMeals||[]){const row=document.createElement('div');row.className='meal';const label=document.createElement('span');label.textContent=meal.name+' — '+meal.ingredients;row.append(label);const use=document.createElement('button');use.textContent='Use today';use.onclick=()=>{const k=dayKey(),i=meal.slot;if(state.checks[k+'-'+i]&&!confirm('Replace this eaten meal?'))return;state.swaps??={};state.swaps[k]??={};state.swaps[k][i]=meal.ingredients;state.nutrition??={};state.nutrition[k]??={};state.nutrition[k][i]=meal.macros.slice();save();render()};row.append(use);const del=document.createElement('button');del.textContent='Delete';del.onclick=()=>{if(confirm('Remove from your meal library? Previously planned meals remain.')){state.customMeals=state.customMeals.filter(x=>x.id!==meal.id);save();render()}};row.append(del);panel.append(row)}
+}
+
+function planSettings(){
+ let root=$('plan-settings');if(!root){root=document.createElement('section');root.id='plan-settings';root.className='card';root.dataset.tab='settings';$('personal').parentElement.after(root)}
+ root.replaceChildren();const h=document.createElement('h2');h.textContent='Choose your plans';root.append(h);
+ const note=document.createElement('p');note.textContent='Apply from the selected day onwards. Logged meals and custom substitutions stay unchanged. Portions are examples, not personalised calorie prescriptions.';root.append(note);
+ const form=document.createElement('div');form.className='activity-grid';root.append(form);
+ function choice(label,options,value){const l=document.createElement('label');l.textContent=label;const s=document.createElement('select');s.style.width='100%';for(const [k,v] of Object.entries(options)){const o=document.createElement('option');o.value=k;o.textContent=v;s.append(o)}s.value=value;l.append(s);form.append(l);return s}
+ const food=choice('Meal plan',planNames,state.profile?.mealPlan||'original');
+ const exercise=choice('Exercise plan',{none:'No scheduled exercise',walking:'Beginner walking',treadmill:'Treadmill walking',strength:'Walking and home strength'},state.profile?.exercisePlan||'none');
+ const b=document.createElement('button');b.textContent='Apply plans';b.onclick=()=>{if(!confirm('Apply plans from '+dateAt((w-1)*7+d).toLocaleDateString('en-GB')+' onwards? Logged meals and substitutions are retained.'))return;state.profile??={};state.profile.mealPlan=food.value;state.profile.exercisePlan=exercise.value;state.planDays??={};state.exerciseDays??={};for(let n=(w-1)*7+d;n<112;n++){const wk=Math.floor(n/7)+1,day=n%7,k=wk+'-'+day;const logged=[0,1,2,3].some(i=>state.checks[k+'-'+i]||state.nutrition?.[k]?.[i]);if(!logged)state.planDays[k]=food.value;if(!state.workoutDone?.[k])state.exerciseDays[k]=exercise.value}save();render()};root.append(b);
+}
+function exerciseSchedule(){
+ let root=$('exercise-schedule');if(!root){root=document.createElement('section');root.id='exercise-schedule';root.className='card';root.dataset.tab='fitness';$('activity').parentElement.before(root)}
+ root.replaceChildren();const h=document.createElement('h2');h.textContent='Weekly exercise plan';root.append(h);
+ const schedules={walking:['Easy walk','Easy walk','Rest or gentle mobility','Easy walk','Easy walk','Optional easy walk','Rest'],treadmill:['Easy treadmill walk','Rest','Easy treadmill walk','Rest or mobility','Easy treadmill walk','Optional easy walk','Rest'],strength:['Easy walk','Home strength: chair sit-to-stand and wall push-ups','Easy walk','Rest','Home strength: chair sit-to-stand and wall push-ups','Easy walk','Rest']};
+ for(let i=0;i<7;i++){const k=w+'-'+i,p=state.exerciseDays?.[k]||'none',task=schedules[p]?.[i]||'No workout scheduled',row=document.createElement('label');row.className='meal';const cb=document.createElement('input');cb.type='checkbox';cb.checked=!!state.workoutDone?.[k];cb.disabled=!schedules[p]||/Rest/.test(task);cb.onchange=()=>{state.workoutDone??={};state.workoutDone[k]=cb.checked;save()};const t=document.createElement('span');t.textContent='Day '+(i+1)+' · '+task+(/walk/i.test(task)&&!task.includes('strength')?' · '+Math.min(30,10+Math.floor((w-1)/2)*5)+' min':task.includes('strength')?' · 1–2 sets of 8 comfortable repetitions':'');row.append(cb,t);root.append(row)}
+ const note=document.createElement('small');note.textContent='Start at a comfortable pace and adapt to your ability. Stop if you feel unwell. Completion checks do not automatically log activity minutes.';root.append(note)
 }

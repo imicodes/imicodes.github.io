@@ -19,23 +19,23 @@ let revision=null,activeUid=null,busy=false,baseline=null,timer=null,unsubscribe
 const ref=uid=>doc(db,'users',uid,'backups','dashboard');
 function controls(){const signed=!!auth.currentUser;el('cloud-login').hidden=signed;el('cloud-login').disabled=busy;el('cloud-logout').hidden=!signed;el('cloud-logout').disabled=busy;el('cloud-save').disabled=!signed||busy;el('cloud-load').disabled=!signed||busy}
 async function action(fn){if(busy)return;busy=true;controls();try{await fn()}catch(e){status('Cloud operation failed: '+(e.code||e.message))}finally{busy=false;controls()}}
-await setPersistence(auth,browserLocalPersistence);
+try { await setPersistence(auth,browserLocalPersistence); } catch(e) { console.warn('Persistent login unavailable',e); }
 const gate=el('login-gate'),dashboard=el('private-dashboard'),gateStatus=el('login-status');
-let generation=0;
+let generation=0, loginError='';
 function lock(message){dashboard.hidden=true;gate.hidden=false;gateStatus.textContent=message;el('gate-login').disabled=false}
-el('gate-login').onclick=async()=>{el('gate-login').disabled=true;try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){lock('Sign-in failed: '+(e.code||e.message))}};
+el('gate-login').onclick=async()=>{loginError='';el('gate-login').disabled=true;gateStatus.textContent='Opening Google sign-in…';try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){lock('Sign-in failed: '+(e.code||e.message))}};
 el('gate-export').onclick=()=>el('export').click();
 onAuthStateChanged(auth,async user=>{
  const token=++generation;stopAuto();revision=null;baseline=null;activeUid=null;controls();
  dashboard.hidden=true;gate.hidden=false;el('gate-export').hidden=true;
- if(!user){lock(gateStatus.textContent==='Access denied. Use the authorised Google account.'?gateStatus.textContent:'Sign in with your authorised Google account.');return}
+ if(!user){lock(loginError||'Sign in with your authorised Google account.');return}
  gateStatus.textContent='Verifying private database access…';el('gate-login').disabled=true;
  try{
   const snap=await getDocFromServer(ref(user.uid));if(token!==generation)return;
   const local=JSON.stringify(state);
   if(snap.exists()){
    const data=snap.data(),v=JSON.parse(data.payload);
-   if(!v||!/^\\d{4}-\\d{2}-\\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
+   if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
    if(local!==JSON.stringify(v)){
     const backup=localStorage.getItem('weight16-v1');
     if(backup&&backup!==JSON.stringify(v))localStorage.setItem('weight16-pre-login-backup',backup);
@@ -45,7 +45,7 @@ onAuthStateChanged(auth,async user=>{
   activeUid=user.uid;dashboard.hidden=false;gate.hidden=true;controls();
   if(!snap.exists()){status('Authorised. Save your first cloud backup to start automatic sync.');return}
   el('cloud-auto').checked=true;el('cloud-auto').onchange();
- }catch(e){if(token!==generation)return;const denied=e.code==='permission-denied';lock(denied?'Access denied. Use the authorised Google account.':'Unable to verify access. Check your connection and sign in again.');await signOut(auth).catch(()=>{})}
+ }catch(e){if(token!==generation)return;const denied=e.code==='permission-denied';console.error('Dashboard login verification failed',e);loginError=denied?'Access denied. Check the authorised Firebase UID and App Check settings.':'Login verification failed: '+(e.code||e.message);lock(loginError);await signOut(auth).catch(()=>{})}
 });
 el('cloud-login').onclick=()=>action(()=>signInWithPopup(auth,new GoogleAuthProvider()));
 el('cloud-logout').onclick=()=>action(async()=>{if(enabled&&JSON.stringify(state)!==baseline&&!confirm('Unsynced changes remain on this device. Sign out anyway?'))return;stopAuto();await signOut(auth)});

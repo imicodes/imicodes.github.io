@@ -4,3 +4,5 @@
 .nutrition-row{display:grid;grid-template-columns:minmax(120px,1.5fr) repeat(4,minmax(65px,1fr));gap:8px;align-items:end;padding:12px 0;border-bottom:1px solid #344151}.nutrition-row label{font-size:12px;color:var(--muted)}.nutrition-row input[type=number]{display:block;width:100%;min-width:0;padding:8px;margin-top:4px}@media(max-width:600px){.nutrition-row{grid-template-columns:repeat(2,minmax(0,1fr))}.nutrition-row strong{grid-column:1/-1}}
 
 #prep select{width:100%;max-width:100%;text-overflow:ellipsis}#prep p{margin:8px 0}.activity-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}.activity-grid input[type=number]{display:block;width:100%;margin-top:6px}#quantities li{margin:6px 0}
+
+[hidden]{display:none!important}#tabs{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:5;background:#111827;padding:10px 0}#tabs button{flex:1 0 auto}#tabs .active{outline:2px solid #52d6a0}#glucose svg{width:100%;max-width:520px}#personal input{max-width:100%}

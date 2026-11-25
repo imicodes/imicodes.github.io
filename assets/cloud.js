@@ -20,35 +20,37 @@ const ref=uid=>doc(db,'users',uid,'backups','dashboard');
 function controls(){const signed=!!auth.currentUser;el('cloud-login').hidden=signed;el('cloud-login').disabled=busy;el('cloud-logout').hidden=!signed;el('cloud-logout').disabled=busy;el('cloud-save').disabled=!signed||busy;el('cloud-load').disabled=!signed||busy}
 async function action(fn){if(busy)return;busy=true;controls();try{await fn()}catch(e){status('Cloud operation failed: '+(e.code||e.message))}finally{busy=false;controls()}}
 try { await setPersistence(auth,browserLocalPersistence); } catch(e) { console.warn('Persistent login unavailable',e); }
+function accountProvider(){const p=new GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});return p}
 const gate=el('login-gate'),dashboard=el('private-dashboard'),gateStatus=el('login-status');
 let generation=0, loginError='';
 function lock(message){dashboard.hidden=true;gate.hidden=false;gateStatus.textContent=message;el('gate-login').disabled=false}
-el('gate-login').onclick=async()=>{loginError='';el('gate-login').disabled=true;gateStatus.textContent='Opening Google sign-in…';try{await signInWithPopup(auth,new GoogleAuthProvider())}catch(e){lock('Sign-in failed: '+(e.code||e.message))}};
+el('gate-login').onclick=async()=>{loginError='';el('gate-login').disabled=true;gateStatus.textContent='Opening Google sign-in…';try{await signInWithPopup(auth,accountProvider())}catch(e){lock('Sign-in failed: '+(e.code||e.message))}};
 el('gate-export').onclick=()=>el('export').click();
 onAuthStateChanged(auth,async user=>{
- const token=++generation;stopAuto();revision=null;baseline=null;activeUid=null;controls();
+ const token=++generation;storageEpoch++;storageUid=null;state=freshState();el('account-name').textContent='';stopAuto();revision=null;baseline=null;activeUid=null;controls();
  dashboard.hidden=true;gate.hidden=false;el('gate-export').hidden=true;
  if(!user){lock(loginError||'Sign in with your authorised Google account.');return}
  gateStatus.textContent='Verifying private database access…';el('gate-login').disabled=true;
  try{
   const snap=await getDocFromServer(ref(user.uid));if(token!==generation)return;
-  const local=JSON.stringify(state);
+  storageUid=user.uid;try{const v=JSON.parse(localStorage.getItem(accountKey(user.uid))||'null');if(v&&v.start&&v.checks&&v.weights&&v.shop)state=v}catch{};const local=JSON.stringify(state);
   if(snap.exists()){
    const data=snap.data(),v=JSON.parse(data.payload);
    if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
    if(local!==JSON.stringify(v)){
-    const backup=localStorage.getItem('weight16-v1');
-    if(backup&&backup!==JSON.stringify(v))localStorage.setItem('weight16-pre-login-backup',backup);
+    const backup=localStorage.getItem(accountKey(user.uid));
+    if(backup&&backup!==JSON.stringify(v))localStorage.setItem(accountKey(user.uid)+':pre-login-backup',backup);
    }
    state=v;revision=data.revision;baseline=JSON.stringify(v);save();table();today();
-  }else{revision=0;baseline=JSON.stringify(state)}
-  activeUid=user.uid;dashboard.hidden=false;gate.hidden=true;controls();
+  }else{revision=0;baseline=JSON.stringify(state);save();table();today()}
+  activeUid=user.uid;el('account-name').textContent=user.email||'Google account';dashboard.hidden=false;gate.hidden=true;controls();
   if(!snap.exists()){status('Authorised. Save your first cloud backup to start automatic sync.');return}
   el('cloud-auto').checked=true;el('cloud-auto').onchange();
- }catch(e){if(token!==generation)return;const denied=e.code==='permission-denied';console.error('Dashboard login verification failed',e);loginError=denied?'Access denied. Check the authorised Firebase UID and App Check settings.':'Login verification failed: '+(e.code||e.message);lock(loginError);await signOut(auth).catch(()=>{})}
+ }catch(e){if(token!==generation)return;const denied=e.code==='permission-denied';console.error('Dashboard login verification failed',e);loginError=denied?'Access denied. Check the authorised Firebase UID and App Check settings.':'Login verification failed: '+(e.code||e.message);storageUid=null;state=freshState();lock(loginError);await signOut(auth).catch(()=>{})}
 });
-el('cloud-login').onclick=()=>action(()=>signInWithPopup(auth,new GoogleAuthProvider()));
-el('cloud-logout').onclick=()=>action(async()=>{if(enabled&&JSON.stringify(state)!==baseline&&!confirm('Unsynced changes remain on this device. Sign out anyway?'))return;stopAuto();await signOut(auth)});
+el('cloud-login').onclick=()=>action(()=>signInWithPopup(auth,accountProvider()));
+el('cloud-logout').onclick=()=>action(async()=>{if(JSON.stringify(state)!==baseline&&!confirm('Unsynced changes remain on this device. Sign out anyway?'))return;stopAuto();await signOut(auth)});
+el('switch-account').onclick=()=>el('cloud-logout').click();
 el('cloud-load').onclick=()=>action(async()=>{
  const uid=auth.currentUser.uid,snap=await getDoc(ref(uid));
  if(activeUid!==uid)return;
@@ -56,7 +58,7 @@ el('cloud-load').onclick=()=>action(async()=>{
  const data=snap.data(),v=JSON.parse(data.payload);
  if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
  if(!confirm('Replace this device’s progress with your cloud backup? Export a local backup first if needed.'))return;
- localStorage.setItem('weight16-v1',JSON.stringify(v));state=v;revision=data.revision;baseline=JSON.stringify(state);table();today();status('Cloud backup loaded.');
+ state=v;save();revision=data.revision;baseline=JSON.stringify(state);table();today();status('Cloud backup loaded.');
 });
 el('cloud-save').onclick=()=>action(async()=>{
  const uid=auth.currentUser.uid;
@@ -98,7 +100,7 @@ el('cloud-auto').onchange=()=>{
   const data=snap.data();if(data.revision===revision)return;
   if(JSON.stringify(state)!==baseline){conflict();return}
   try{const v=JSON.parse(data.payload);if(!v||!/^\d{4}-\d{2}-\d{2}$/.test(v.start)||!v.checks||!v.weights||!v.shop)throw Error('Invalid backup');
-   localStorage.setItem('weight16-v1',JSON.stringify(v));state=v;revision=data.revision;baseline=JSON.stringify(v);table();render();status('Updated from cloud.');
+   state=v;save();revision=data.revision;baseline=JSON.stringify(v);table();render();status('Updated from cloud.');
   }catch(e){stopAuto();status('Sync paused: '+e.message)}
  },e=>{stopAuto();status('Sync paused: '+e.code)});
  timer=setInterval(autoSave,3000);status('Automatic sync enabled for this session.');

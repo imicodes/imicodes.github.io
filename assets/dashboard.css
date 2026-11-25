@@ -8,3 +8,19 @@
 [hidden]{display:none!important}#tabs{display:flex;flex-wrap:wrap;gap:8px;position:sticky;top:0;z-index:5;background:#111827;padding:10px 0}#tabs button{flex:1 0 auto}#tabs .active{outline:2px solid #52d6a0}#glucose svg{width:100%;max-width:520px}#personal input{max-width:100%}
 
 .shopping-summary{display:grid;gap:10px;padding:14px;background:#142c28;border-radius:12px;margin-bottom:12px}.shopping-summary strong{color:var(--accent)}.shopping-tools{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}.shopping-tools button{font-size:14px}.shopping-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:14px 0;align-items:start}.shopping-category{background:#141d28;border:1px solid #344151;border-radius:12px;overflow:hidden}.shopping-category h3{font-size:15px;margin:0;padding:12px 14px;background:#253344}.shopping-item{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:10px;padding:12px;border-bottom:1px solid #344151;cursor:pointer;min-height:52px}.shopping-item:last-child{border-bottom:0}.shopping-item span{overflow-wrap:anywhere;text-transform:capitalize}.shopping-item strong{font-size:13px;color:var(--accent);white-space:nowrap}.shopping-item.collected span{text-decoration:line-through;opacity:.55}.shopping-item.collected strong{opacity:.55}@media(max-width:650px){.shopping-grid{grid-template-columns:1fr}.shopping-item{padding:10px}.shopping-tools button{flex:1 0 auto}}
+
+/* Custom meal library */
+#prep>section.card{margin-top:24px;background:#141d28;padding:20px}
+#prep>section.card h3{margin:0 0 16px;font-size:20px}
+#prep>section.card form{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;align-items:end;padding-bottom:20px;border-bottom:1px solid #344151}
+#prep>section.card form label{display:flex;flex-direction:column;gap:7px;font-size:13px;color:var(--muted);min-width:0}
+#prep>section.card form label:first-child,#prep>section.card form>select{grid-column:span 2}
+#prep>section.card form label:has(textarea){grid-column:1/-1}
+#prep>section.card form input,#prep>section.card form textarea{width:100%;min-width:0}
+#prep>section.card textarea{font:inherit;color:inherit;background:#253344;border:1px solid #46566a;border-radius:9px;padding:12px;min-height:90px;resize:vertical}
+#prep>section.card form button{grid-column:1/-1;justify-self:start;background:var(--accent);color:#10231b;font-weight:700;border:0;padding:12px 22px}
+#prep>section.card>.meal{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:16px 0;border-bottom:1px solid #344151}
+#prep>section.card>.meal span{overflow-wrap:anywhere;line-height:1.5}
+#prep>section.card>.meal button:first-of-type{border-color:var(--accent);color:var(--accent)}
+#prep>section.card>.meal button:last-of-type{color:#f4a7a7}
+@media(max-width:600px){#prep>section.card{padding:14px}#prep>section.card form{grid-template-columns:repeat(2,minmax(0,1fr))}#prep>section.card form button{width:100%}#prep>section.card>.meal{grid-template-columns:1fr 1fr}#prep>section.card>.meal span{grid-column:1/-1}}

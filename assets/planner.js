@@ -25,13 +25,14 @@ function prep(){
   const p=document.createElement('p');p.textContent=m;inner.append(p);
   const tip=document.createElement('p');tip.textContent=instructions(m);inner.append(tip);
   const sel=document.createElement('select');sel.setAttribute('aria-label','Substitute '+title.textContent);
-  const choices=[...new Set([baseMenu(r,d)[i],m,...Array.from({length:4},(_,rr)=>Array.from({length:7},(_,dd)=>baseMenu(rr,dd)[i])).flat()])];
+  const choices=[...new Set([baseMenu(r,d)[i],m,...(state.customMeals||[]).filter(x=>x.slot===i).map(x=>x.ingredients),...Array.from({length:4},(_,rr)=>Array.from({length:7},(_,dd)=>baseMenu(rr,dd)[i])).flat()])];
   choices.forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;sel.append(o)});sel.value=m;
   sel.onchange=()=>{if(state.checks[key+'-'+i]&&!confirm('This meal is marked eaten. Change it and its nutrition estimate?')){sel.value=m;return}
    state.swaps??={};state.swaps[key]??={};state.swaps[key][i]=sel.value;
-   state.nutrition??={};state.nutrition[key]??={};state.nutrition[key][i]=estimateMeal(sel.value);save();render()};
+   state.nutrition??={};state.nutrition[key]??={};state.nutrition[key][i]=customEstimate(sel.value,i);save();render()};
   inner.append(sel);root.append(row);
  });
+ customMealEditor(root);
  // Replace the visible meal descriptions without changing checkbox handlers.
  const labels=$('meals').querySelectorAll('label span');
  selectedMenu(r,d).forEach((m,i)=>{if(labels[i]){const strong=labels[i].querySelector('strong');labels[i].replaceChildren(strong,document.createElement('br'),document.createTextNode(m))}});
@@ -79,5 +80,20 @@ function activity(){
  const p=document.createElement('p');p.textContent=avg===null?'No daily weights recorded this week.':'Weekly average: '+avg.toFixed(1)+' kg ('+entries.length+' days)';root.append(p);
  if(avg!==null){const b=document.createElement('button');b.textContent='Use average in weekly tracker';b.onclick=()=>{state.weights[w]=avg.toFixed(1);save();table();metrics()};root.append(b)}
 }
-$('reset-nutrition').onclick=()=>{if(!confirm('Reset nutrition values and extra food for this day?'))return;const key=dayKey();state.nutrition??={};delete state.nutrition[key];selectedMenu((w-1)%4,d).forEach((m,i)=>{if(m!==baseMenu((w-1)%4,d)[i]){state.nutrition[key]??={};state.nutrition[key][i]=estimateMeal(m)}});save();render()};
+$('reset-nutrition').onclick=()=>{if(!confirm('Reset nutrition values and extra food for this day?'))return;const key=dayKey();state.nutrition??={};delete state.nutrition[key];selectedMenu((w-1)%4,d).forEach((m,i)=>{if(m!==baseMenu((w-1)%4,d)[i]){state.nutrition[key]??={};state.nutrition[key][i]=customEstimate(m,i)}});save();render()};
 const previousRender=render;render=function(){previousRender();prep();quantities();activity()};today();
+
+function customEstimate(meal,slot){return (state.customMeals||[]).find(x=>x.slot===slot&&x.ingredients===meal)?.macros?.slice()||estimateMeal(meal)}
+function customMealEditor(root){
+ const panel=document.createElement('section');panel.className='card';root.append(panel);
+ const h=document.createElement('h3');h.textContent='Custom meals';panel.append(h);
+ const form=document.createElement('form');panel.append(form);
+ function field(label,type='text'){const l=document.createElement('label');l.textContent=label;const e=document.createElement('input');e.type=type;l.append(e);form.append(l);return e}
+ const name=field('Meal name');name.required=true;name.maxLength=80;
+ const slot=document.createElement('select');['Breakfast','Lunch','Snack','Dinner'].forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v;slot.append(o)});form.append(slot);
+ const l=document.createElement('label');l.textContent='Ingredients (comma separated, e.g. 150 g chicken, 100 g rice)';const ingredients=document.createElement('textarea');ingredients.required=true;ingredients.maxLength=800;l.append(ingredients);form.append(l);
+ const macros=['Calories','Protein (g)','Carbs (g)','Fat (g)'].map((v,i)=>{const e=field(v+' (optional)','number');e.min=0;e.max=i===0?10000:1000;e.step=0.1;return e});
+ const submit=document.createElement('button');submit.type='submit';submit.textContent='Save custom meal';form.append(submit);
+ form.onsubmit=e=>{e.preventDefault();const n=name.value.trim(),m=ingredients.value.trim(),i=Number(slot.value);if(!n||!m)return;state.customMeals??=[];if(state.customMeals.some(x=>x.slot===i&&x.ingredients===m)){alert('This meal already exists for this meal type.');return}const estimated=estimateMeal(m);state.customMeals.push({id:crypto.randomUUID(),name:n,slot:i,ingredients:m,macros:macros.map((x,j)=>x.value===''?estimated[j]:Number(x.value))});save();render()};
+ for(const meal of state.customMeals||[]){const row=document.createElement('div');row.className='meal';const label=document.createElement('span');label.textContent=meal.name+' — '+meal.ingredients;row.append(label);const use=document.createElement('button');use.textContent='Use today';use.onclick=()=>{const k=dayKey(),i=meal.slot;if(state.checks[k+'-'+i]&&!confirm('Replace this eaten meal?'))return;state.swaps??={};state.swaps[k]??={};state.swaps[k][i]=meal.ingredients;state.nutrition??={};state.nutrition[k]??={};state.nutrition[k][i]=meal.macros.slice();save();render()};row.append(use);const del=document.createElement('button');del.textContent='Delete';del.onclick=()=>{if(confirm('Remove from your meal library? Previously planned meals remain.')){state.customMeals=state.customMeals.filter(x=>x.id!==meal.id);save();render()}};row.append(del);panel.append(row)}
+}

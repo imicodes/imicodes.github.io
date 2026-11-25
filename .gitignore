@@ -1,0 +1,5 @@
+weight-progress*.json
+.env
+.env.*
+!.env.example
+.DS_Store

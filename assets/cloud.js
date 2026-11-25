@@ -5,7 +5,7 @@ import {getFirestore,doc,getDoc,getDocFromServer,runTransaction,serverTimestamp,
 const app=initializeApp({apiKey:"AIzaSyB_BeoObTIzp8jmPWZ0fIunGvDwu46Vjvc",authDomain:"imicodes-health-dashboard.firebaseapp.com",projectId:"imicodes-health-dashboard",storageBucket:"imicodes-health-dashboard.firebasestorage.app",messagingSenderId:"302089969749",appId:"1:302089969749:web:8f48d5135a075e6fd734dc"});
 try {
  initializeAppCheck(app,{
-  provider:new ReCaptchaEnterpriseProvider('6Lf0HjIuAAAAACwTscmpixfvfsK01TtPUYvhXm1q'),
+  provider:new ReCaptchaEnterpriseProvider('6LeB-TEuAAAAAM33XCTzWZkTdKpEY5J1gj6-JcVC'),
   isTokenAutoRefreshEnabled:true
  });
 } catch(error) {

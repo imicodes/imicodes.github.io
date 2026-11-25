@@ -1,7 +1,18 @@
+import {initializeAppCheck,ReCaptchaEnterpriseProvider} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app-check.js';
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js';
 import {getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged,setPersistence,browserLocalPersistence} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js';
 import {getFirestore,doc,getDoc,getDocFromServer,runTransaction,serverTimestamp,onSnapshot} from 'https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js';
 const app=initializeApp({apiKey:"AIzaSyB_BeoObTIzp8jmPWZ0fIunGvDwu46Vjvc",authDomain:"imicodes-health-dashboard.firebaseapp.com",projectId:"imicodes-health-dashboard",storageBucket:"imicodes-health-dashboard.firebasestorage.app",messagingSenderId:"302089969749",appId:"1:302089969749:web:8f48d5135a075e6fd734dc"});
+try {
+ initializeAppCheck(app,{
+  provider:new ReCaptchaEnterpriseProvider('6Lf0HjIuAAAAACwTscmpixfvfsK01TtPUYvhXm1q'),
+  isTokenAutoRefreshEnabled:true
+ });
+} catch(error) {
+ console.error('App Check initialization failed',error);
+ document.getElementById('login-status').textContent='Security verification could not initialize. Refresh the page and check your connection.';
+ throw error;
+}
 const auth=getAuth(app),db=getFirestore(app);
 const el=id=>document.getElementById(id),status=s=>el('cloud-status').textContent=s;
 let revision=null,activeUid=null,busy=false,baseline=null,timer=null,unsubscribe=null,enabled=false;
